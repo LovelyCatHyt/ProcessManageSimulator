@@ -49,6 +49,21 @@ namespace ProcessManageCore.Singleton
             if (!hasProcess) throw new ProcessNotFoundException();
         }
 
-        public static Process GetProcess(int pid) => _processesDictionary[pid] ?? throw new ProcessNotFoundException();
+        /// <summary>
+        /// 根据 PID 获取一个进程
+        /// </summary>
+        /// <param name="pid"></param>
+        /// <returns></returns>
+        public static Process GetProcess(int pid)
+        {
+            try
+            {
+                return _processesDictionary[pid];
+            }
+            catch (KeyNotFoundException)
+            {
+                throw new ProcessNotFoundException();
+            }
+        }
     }
 }
