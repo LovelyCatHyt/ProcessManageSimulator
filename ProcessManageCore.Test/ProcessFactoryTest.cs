@@ -5,7 +5,7 @@ using ProcessManageCore.Singleton;
 
 namespace ProcessManageCore.Test
 {
-    public class Tests
+    public class ProcessFactoryTest
     {
         [SetUp]
         public void Setup()
