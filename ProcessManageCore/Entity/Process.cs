@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Linq;
 
 namespace ProcessManageCore.Entity
 {
@@ -34,6 +32,10 @@ namespace ProcessManageCore.Entity
         /// 进程 PID 保证全局唯一
         /// </summary>
         public readonly int PID;
+        /// <summary>
+        /// 优先级, 越小优先级越高
+        /// </summary>
+        public int priority;
         /// <summary>
         /// 进程名
         /// </summary>
@@ -71,6 +73,33 @@ namespace ProcessManageCore.Entity
             this.subsequenceProcessList = subsequenceProcessList;
         }
 
-        public override string ToString() => $"[{PID}]{name}: state: {state}, requiredTime: {requiredTime}, isIndependent: {isIndependent}, preProcessList: {preProcessList}, subsequenceProcessList: {subsequenceProcessList}";
+        public void OnRunning()
+        {
+
+        }
+
+        public void OnKilled()
+        {
+
+        }
+
+        public void OnReady()
+        {
+
+        }
+
+        public void OnFinished()
+        {
+
+        }
+
+        public override string ToString() =>
+            $"[{PID:D4}] {name}" +
+            $": state: {state}, " +
+            $"requiredTime: {requiredTime}, " +
+            $"isIndependent: {isIndependent}, " +
+            $"priority: {priority} " +
+            $"preList: {preProcessList.Aggregate("", (s, i) => s + i)}, " +
+            $"subList: {subsequenceProcessList.Aggregate("", (s, i) => s + i)}";
     }
 }

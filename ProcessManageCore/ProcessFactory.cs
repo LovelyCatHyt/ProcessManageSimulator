@@ -19,6 +19,13 @@ namespace ProcessManageCore
                 isIndependent,
                 preProcessList,
                 subsequenceProcessList);
+            newProcess.priority = newProcess.type switch 
+            {
+                ProcessType.System => 0,
+                ProcessType.Kernel => 10,
+                ProcessType.User => 20,
+                _ => 20
+            };
             ProcessTable.AddProcess(newProcess);
             return newProcess;
         }
