@@ -9,8 +9,9 @@ namespace ProcessManageCore.Singleton
     public class MemoryManager
     {
         public readonly int totalLength;
+        public int UsedSpace => _occupiedBlocks.Sum(b => b.length);
         public int RemainedSpace => _availableBlocks.Sum(b => b.length);
-        public int MaxBlock => _availableBlocks.Max(b => b.length);
+        public int MaxBlock => _availableBlocks.Count > 0 ? _availableBlocks.Max(b => b.length) : 0;
 
         private readonly List<MemoryBlock> _availableBlocks = new();
         private readonly List<MemoryBlock> _occupiedBlocks = new();

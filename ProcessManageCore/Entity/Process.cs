@@ -45,6 +45,10 @@ namespace ProcessManageCore.Entity
         /// </summary>
         public int requiredTime;
         /// <summary>
+        /// 需要的内存
+        /// </summary>
+        public int requiredMemory;
+        /// <summary>
         /// 进程状态
         /// </summary>
         public ProcessState state;
@@ -60,13 +64,15 @@ namespace ProcessManageCore.Entity
         /// 后继进程(列表)
         /// </summary>
         public readonly int[] subsequenceProcessList;
+        
 
-        public Process(ProcessType type, int pid, string name, int requiredTime, ProcessState state, bool isIndependent, int[] preProcessList, int[] subsequenceProcessList)
+        public Process(ProcessType type, int pid, string name, int requiredTime, int requiredMemory,ProcessState state, bool isIndependent, int[] preProcessList, int[] subsequenceProcessList)
         {
             this.type = type;
             PID = pid;
             this.name = name;
             this.requiredTime = requiredTime;
+            this.requiredMemory = requiredMemory;
             this.state = state;
             this.isIndependent = isIndependent;
             this.preProcessList = preProcessList;

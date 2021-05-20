@@ -8,18 +8,19 @@ namespace ProcessManageCore
 {
     public static class ProcessFactory
     {
-        public static Process CreateProcess(ProcessType type, string name, int requiredTime, bool isIndependent, int[] preProcessList, int[] subsequenceProcessList)
+        public static Process CreateProcess(ProcessType type, string name, int requiredTime, int requiredMemory, bool isIndependent, int[] preProcessList, int[] subsequenceProcessList)
         {
             // TODO: Use Object Pool maybe
-            Process newProcess = new Process(type, 
+            Process newProcess = new Process(type,
                 ProcessTable.GetNewAvailablePID(type),
                 name,
                 requiredTime,
+                requiredMemory,
                 ProcessState.Ready,
                 isIndependent,
                 preProcessList,
                 subsequenceProcessList);
-            newProcess.priority = newProcess.type switch 
+            newProcess.priority = newProcess.type switch
             {
                 ProcessType.System => 0,
                 ProcessType.Kernel => 10,
