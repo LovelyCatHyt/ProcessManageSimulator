@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using ProcessManageCore.Singleton;
 
 namespace ProcessManageCore.Entity
 {
@@ -59,6 +60,18 @@ namespace ProcessManageCore.Entity
             }
         }
 
-        public override string ToString() => $"id: {deviceID}, occupied: {IsOccupied}, process: {(IsOccupied ? occupyingProcess.ToString() : "None")}, timePhrase: {timePhrase}";
+        public override string ToString()
+        {
+            StringBuilder s = new StringBuilder();
+            s.AppendFormat("id: {0}, occupied: {1}, timePhrase: {2}", deviceID, IsOccupied,
+                timePhrase);
+            if (IsOccupied)
+            {
+                var processPID = occupyingProcess.ToString();
+                var remainedTime = ProcessTable.GetProcess(occupyingProcess).requiredTime.ToString();
+                s.AppendFormat(", process: {0}, remainedTime: {1}", processPID, remainedTime);
+            }
+            return s.ToString();
+        }
     }
 }

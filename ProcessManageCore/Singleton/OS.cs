@@ -12,6 +12,11 @@ namespace ProcessManageCore.Singleton
     public class OS
     {
         public static OS Instance { get; private set; }
+        public bool CPUAllFree => cpuList.All(x => !x.IsOccupied);
+        /// <summary>
+        /// 经历的总运行周期数, 每次 Update 算一个刻
+        /// </summary>
+        public long ElapsedPeriod { get; private set; }
         private readonly CPU[] cpuList;
         private readonly MemoryManager memoryMgr;
         /// <summary>
@@ -22,7 +27,10 @@ namespace ProcessManageCore.Singleton
         /// 因申请内存过多而等待内存分配的队列
         /// </summary>
         private readonly List<Process> waitForMemoryList = new();
-
+        /// <summary>
+        /// 挂起队列, 进入挂起队列的同时会尝试分配内存
+        /// </summary>
+        private readonly List<Process> hangupList = new();
         public OS(int cpuCount, int memorySize)
         {
             cpuList = new CPU[cpuCount];
@@ -50,13 +58,16 @@ namespace ProcessManageCore.Singleton
                     process.requiredTime--;
                     if (process.requiredTime == 0)
                     {
+                        process.OnFinished();
                         KillProcess(process.PID);
                     }
                 }
 
                 // 将可能空出分配给后备队列
                 TryAllocateWaitList();
-
+                // 检查挂起队列是否有可以解挂的进程, 以及是否有应该挂起的进程
+                CheckUnhang();
+                CheckHangup();
                 // cpu 空闲
                 if (!cpu.IsOccupied && readyList.Count > 0)
                 {
@@ -74,6 +85,7 @@ namespace ProcessManageCore.Singleton
             }
             // 更新队列优先级
             readyList.ForEach(p => p.priority = Math.Max(0, p.priority - 1));
+            ElapsedPeriod++;
         }
 
         /// <summary>
@@ -103,7 +115,7 @@ namespace ProcessManageCore.Singleton
         /// <summary>
         /// 尝试给等待内存队列分配内存
         /// </summary>
-        public void TryAllocateWaitList()
+        private void TryAllocateWaitList()
         {
             if (waitForMemoryList.Count > 0)
             {
@@ -121,6 +133,47 @@ namespace ProcessManageCore.Singleton
         }
 
         /// <summary>
+        /// 检查挂起队列, 将可以解挂的进程移到就绪队列
+        /// </summary>
+        private void CheckUnhang()
+        {
+            for (int i = 0; i < hangupList.Count; i++)
+            {
+                if (hangupList[i].DependenceClear)
+                {
+                    AddProcessToReadyList(hangupList[i]);
+                    hangupList.RemoveAt(i);
+                    i--;
+                }
+            }
+        }
+
+        private void CheckHangup()
+        {
+            for (int i = 0; i < readyList.Count; i++)
+            {
+                if (!readyList[i].DependenceClear)
+                {
+                    readyList[i].OnHangup();
+                    hangupList.Add(readyList[i]);
+                    readyList.RemoveAt(i);
+                    i--;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 将任意状态的进程挂起
+        /// </summary>
+        /// <param name="p"></param>
+        public void Hangup(Process p)
+        {
+            // TODO: Hangup
+            p.OnHangup();
+            hangupList.Add(p);
+        }
+
+        /// <summary>
         /// 在就绪队列中添加新进程, 并试图分配内存
         /// <para></para>
         /// <para>内存不足则放到等待内存分配的位置</para>
@@ -134,11 +187,21 @@ namespace ProcessManageCore.Singleton
             }
             if (memoryMgr.RequestMemory(p.requiredMemory, p.PID) != null)
             {
-                AddProcessToReadyList(p);
+                if (p.DependenceClear)
+                {
+                    AddProcessToReadyList(p);
+                }
+                else
+                {
+                    // 挂起
+                    p.OnHangup();
+                    hangupList.Add(p);
+                }
             }
             else
             {
                 waitForMemoryList.Add(p);
+                p.OnWaitForMemory();
             }
         }
 
@@ -225,6 +288,7 @@ namespace ProcessManageCore.Singleton
             StringBuilder strBuilder = new();
             var used = memoryMgr.UsedSpace;
             var total = memoryMgr.totalLength;
+            strBuilder.AppendFormat("Elapsed period: {0}\n", ElapsedPeriod);
             strBuilder.AppendFormat("Memory: {0:D4}/{1:D4}: {2:F1}%\n", used, total, (float)used / total * 100);
             strBuilder.AppendLine("CPU list:");
             foreach (var cpu in cpuList)
@@ -234,8 +298,10 @@ namespace ProcessManageCore.Singleton
 
             strBuilder.AppendLine("Ready process:");
             readyList.ForEach(p => strBuilder.AppendFormat("\t{0}\n", p));
-            strBuilder.AppendLine("waitForMemory process:");
+            strBuilder.AppendLine("WaitForMemory process:");
             waitForMemoryList.ForEach(p => strBuilder.AppendFormat("\t{0}\n", p));
+            strBuilder.AppendLine("HangUp process:");
+            hangupList.ForEach(p=>strBuilder.AppendFormat("\t{0}\n", p));
             return strBuilder.ToString();
         }
     }

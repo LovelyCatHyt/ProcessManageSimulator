@@ -40,5 +40,31 @@ namespace ProcessManageCore.Test
                 true, new int[0],
                 new int[0])));
         }
+
+        [Test]
+        public void TestProcessDependencies()
+        {
+            os.CleanUp();
+            Process a;
+            Process b;
+            Process c;
+            os.AddNewProcess(a = ProcessFactory.CreateIndependentProcess(ProcessType.System, "TestA", 1, 1));
+            os.AddNewProcess(b = ProcessFactory.CreateIndependentProcess(ProcessType.System, "TestB", 1, 1));
+            os.AddNewProcess(c = ProcessFactory.CreateIndependentProcess(ProcessType.System, "TestC", 1, 1));
+            Process.SetProcessDependence(b, a);
+            Process.SetProcessDependence(c, b);
+            os.Update();
+            Console.WriteLine(os);
+            Assert.True(!os.CPUAllFree);
+            os.Update();
+            Console.WriteLine(os);
+            Assert.True(!os.CPUAllFree);
+            os.Update();
+            Console.WriteLine(os);
+            Assert.True(!os.CPUAllFree);
+            os.Update();
+            Console.WriteLine(os);
+            Assert.True(os.CPUAllFree);
+        }
     }
 }

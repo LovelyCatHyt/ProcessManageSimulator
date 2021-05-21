@@ -30,5 +30,9 @@ namespace ProcessManageCore
             ProcessTable.AddProcess(newProcess);
             return newProcess;
         }
+
+        public static Process CreateIndependentProcess(ProcessType type, string name, int requiredTime,
+            int requiredMemory) =>
+            CreateProcess(type, name, requiredTime, requiredMemory, true, new int[0], new int[0]);
     }
 }
