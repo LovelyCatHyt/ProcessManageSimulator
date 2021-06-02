@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ProcessManageCore.Singleton;
 
@@ -71,7 +72,12 @@ namespace ProcessManageCore.Entity
         /// </summary>
         public readonly List<int> subsequenceProcessList;
         public bool DependenceClear { get; private set; }
-
+        public event Action<Process> runningEvent;
+        public event Action<Process> killedEvent;
+        public event Action<Process> hangupEvent;
+        public event Action<Process> readyEvent;
+        public event Action<Process> waitForMemoryEvent;
+        public event Action<Process> finishedEvent;
 
         public Process(ProcessType type, int pid, string name, int requiredTime, int requiredMemory, ProcessState state, bool isIndependent, int[] preProcessList, int[] subsequenceProcessList)
         {
@@ -90,26 +96,30 @@ namespace ProcessManageCore.Entity
         public virtual void OnRunning()
         {
             state = ProcessState.Running;
+            runningEvent?.Invoke(this);
         }
 
         public virtual void OnKilled()
         {
-            // ?
+            killedEvent?.Invoke(this);
         }
 
         public virtual void OnHangup()
         {
             state = ProcessState.HangUp;
+            hangupEvent?.Invoke(this);
         }
 
         public virtual void OnReady()
         {
             state = ProcessState.Ready;
+            readyEvent?.Invoke(this);
         }
 
         public virtual void OnWaitForMemory()
         {
             state = ProcessState.WaitForMemory;
+            waitForMemoryEvent?.Invoke(this);
         }
 
         public virtual void OnFinished()
@@ -119,6 +129,7 @@ namespace ProcessManageCore.Entity
                 var subProcess = ProcessTable.GetProcess(i);
                 subProcess.PreProcessFinish(PID);
             }
+            finishedEvent?.Invoke(this);
         }
 
         /// <summary>

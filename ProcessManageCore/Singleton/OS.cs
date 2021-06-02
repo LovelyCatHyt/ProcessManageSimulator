@@ -17,6 +17,8 @@ namespace ProcessManageCore.Singleton
         /// 经历的总运行周期数, 每次 Update 算一个刻
         /// </summary>
         public long ElapsedPeriod { get; private set; }
+        public event Action<OS> updateEvent;
+
         private readonly CPU[] cpuList;
         private readonly MemoryManager memoryMgr;
         /// <summary>
@@ -86,6 +88,7 @@ namespace ProcessManageCore.Singleton
             // 更新队列优先级
             readyList.ForEach(p => p.priority = Math.Max(0, p.priority - 1));
             ElapsedPeriod++;
+            updateEvent?.Invoke(this);
         }
 
         /// <summary>
