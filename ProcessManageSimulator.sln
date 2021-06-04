@@ -3,9 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcessManageCore", "ProcessManageCore\ProcessManageCore.csproj", "{39C27B4C-059C-47F9-A349-C673F1D656F3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProcessManageCore", "ProcessManageCore\ProcessManageCore.csproj", "{39C27B4C-059C-47F9-A349-C673F1D656F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcessManageCore.Test", "ProcessManageCore.Test\ProcessManageCore.Test.csproj", "{5D6DB3CA-B3EC-4A2C-969D-F139BBD828B3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProcessManageCore.Test", "ProcessManageCore.Test\ProcessManageCore.Test.csproj", "{5D6DB3CA-B3EC-4A2C-969D-F139BBD828B3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{39C27B4C-059C-47F9-A349-C673F1D656F3} = {39C27B4C-059C-47F9-A349-C673F1D656F3}
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProcessManageWPF", "ProcessManageWPF\ProcessManageWPF.csproj", "{20EB3B4A-748F-4004-A78F-500AAE8E4292}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcessManageCLI", "ProcessManageCLI\ProcessManageCLI.csproj", "{D6A41421-7301-418D-9DA4-A5810ACDAFD8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +28,14 @@ Global
 		{5D6DB3CA-B3EC-4A2C-969D-F139BBD828B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D6DB3CA-B3EC-4A2C-969D-F139BBD828B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D6DB3CA-B3EC-4A2C-969D-F139BBD828B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20EB3B4A-748F-4004-A78F-500AAE8E4292}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20EB3B4A-748F-4004-A78F-500AAE8E4292}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20EB3B4A-748F-4004-A78F-500AAE8E4292}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20EB3B4A-748F-4004-A78F-500AAE8E4292}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6A41421-7301-418D-9DA4-A5810ACDAFD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6A41421-7301-418D-9DA4-A5810ACDAFD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6A41421-7301-418D-9DA4-A5810ACDAFD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6A41421-7301-418D-9DA4-A5810ACDAFD8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
