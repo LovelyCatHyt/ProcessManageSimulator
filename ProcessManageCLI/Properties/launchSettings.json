@@ -2,7 +2,7 @@
   "profiles": {
     "ProcessManageCLI": {
       "commandName": "Project",
-      "commandLineArgs": "\"D:\\Repos\\ProcessManageSimulator\\config.json\""
+      "commandLineArgs": "\"config.json\""
     }
   }
 }

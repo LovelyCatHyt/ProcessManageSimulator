@@ -45,6 +45,11 @@ namespace ProcessManageCore.Singleton
             Instance = this;
         }
 
+        public static void OSLoop(OS os)
+        {
+
+        }
+
         /// <summary>
         /// 更新一个时间单位
         /// </summary>

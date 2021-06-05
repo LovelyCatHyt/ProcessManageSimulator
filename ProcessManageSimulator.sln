@@ -12,8 +12,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProcessManageCore.Test", "P
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProcessManageWPF", "ProcessManageWPF\ProcessManageWPF.csproj", "{20EB3B4A-748F-4004-A78F-500AAE8E4292}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcessManageCLI", "ProcessManageCLI\ProcessManageCLI.csproj", "{D6A41421-7301-418D-9DA4-A5810ACDAFD8}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,10 +30,6 @@ Global
 		{20EB3B4A-748F-4004-A78F-500AAE8E4292}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20EB3B4A-748F-4004-A78F-500AAE8E4292}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{20EB3B4A-748F-4004-A78F-500AAE8E4292}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D6A41421-7301-418D-9DA4-A5810ACDAFD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D6A41421-7301-418D-9DA4-A5810ACDAFD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D6A41421-7301-418D-9DA4-A5810ACDAFD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D6A41421-7301-418D-9DA4-A5810ACDAFD8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
