@@ -5,13 +5,28 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProcessManageWPF"
         mc:Ignorable="d"
-        Title="进程模拟器 - by Hyt" Height="500" Width="1000">
+        Title="进程模拟器 - by Hyt" Height="600" Width="1000">
+    <Window.Resources>
+        <local:ProcessVisitor x:Key="focusProcess"></local:ProcessVisitor>
+        <ControlTemplate x:Key="simpleListTemplate">
+            <ListView HorizontalAlignment="Stretch">
+                <Label Content="Test"></Label>
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="PID" DisplayMemberBinding="{Binding PID}" />
+                        <GridViewColumn Header="进程名" DisplayMemberBinding="{Binding Name}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </ControlTemplate>
+    </Window.Resources>
     <Grid  Margin="10,10,10,10">
         <Grid.RowDefinitions>
             <RowDefinition Height="2*"/>
             <RowDefinition Height="5"/>
-            <RowDefinition Height="5*"/>
-            <RowDefinition Height="1*"/>
+            <RowDefinition Height="4*"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="2*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*"/>
@@ -21,21 +36,18 @@
         <StackPanel Grid.Column="0" Name="cpuPanel" Orientation="Vertical"/>
         <GridSplitter ResizeDirection="Rows" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
                       VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+        <GridSplitter Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="3"></GridSplitter>
         <ListView Grid.Column="0" Grid.Row="2" 
                   HorizontalAlignment="Stretch" VerticalContentAlignment="Stretch" Name="processList" SelectionChanged="ProcessList_SelectionChanged">
-            <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                </Style>
-            </ListView.ItemContainerStyle>
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="PID" DisplayMemberBinding="{Binding PID}" />
+                    <GridViewColumn Header="进程名" DisplayMemberBinding="{Binding Name}" />
+                </GridView>
+            </ListView.View>
         </ListView>
         <GridSplitter Grid.Row="0" ResizeDirection="Columns" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.RowSpan="4"/>
-        <Grid Grid.Row="0" Grid.Column="2">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="1*"/>
-                <RowDefinition Height="2*"/>
-                <!--<RowDefinition Height="1*"/>-->
-            </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Grid.Column="2">
             <StackPanel Orientation="Vertical">
                 <StackPanel Orientation="Horizontal">
                     <Label Content="已运行时间片数目:"></Label>
@@ -58,15 +70,53 @@
                         <ColumnDefinition Width="1*"/>
                         <ColumnDefinition Width="1*"/>
                     </Grid.ColumnDefinitions>
-                    <Button Name="btnRunStop" Click="BtnRunStop_OnClick" Content="暂停"></Button>
-                    <Button Grid.Column="1" Name="btnStepRun" Click="BtnStepRun_OnClick" Content="步进"></Button>
+                    <Button Name="btnRunStop" Click="BtnRunStop_OnClick" Content="暂停" Margin="5,0,5,0" Cursor="Hand"></Button>
+                    <Button Grid.Column="1" Name="btnStepRun" Click="BtnStepRun_OnClick" Content="步进" Margin="5,0,0,0" Cursor="Hand"></Button>
                 </Grid>
             </StackPanel>
+        </StackPanel>
+        <local:ProcessFullInfo x:Name="processFullInfo" Grid.Row="2" Grid.Column="2" DataContext="{Binding ElementName=processList, Path=SelectedItem}" />
+        <Button Content="添加进程" HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                Width="80" Height="30"
+                Grid.Row="2"
+                Grid.Column="2" Click="Btn_AddProcess" Margin="0,0,0,10" Cursor="Hand" />
+        <Grid Grid.Row="4" Grid.Column="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <!--<ColumnDefinition/>-->
+            </Grid.ColumnDefinitions>
+            <GroupBox  Header="就绪队列">
+                <ListView Name="readyList" HorizontalAlignment="Stretch">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="PID" DisplayMemberBinding="{Binding PID}" />
+                            <GridViewColumn Header="进程名" DisplayMemberBinding="{Binding Name}" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </GroupBox>
+            <GroupBox  Grid.Column="1" Header="挂起队列">
+                <ListView Name="hangupList" HorizontalAlignment="Stretch">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="PID" DisplayMemberBinding="{Binding PID}" />
+                            <GridViewColumn Header="进程名" DisplayMemberBinding="{Binding Name}" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </GroupBox>
+            <GroupBox  Grid.Column="2" Header="后备队列">
+                <ListView Name="waitForMemoryList" HorizontalAlignment="Stretch">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="PID" DisplayMemberBinding="{Binding PID}" />
+                            <GridViewColumn Header="进程名" DisplayMemberBinding="{Binding Name}" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </GroupBox>
         </Grid>
-        <local:ProcessFullInfo x:Name="processFullInfo" Grid.Row="2" Grid.Column="2" />
-        <Button Content="添加进程" HorizontalAlignment="Center" VerticalAlignment="Center"
-                Width="100" Height="50"
-                Grid.Row="3"
-                Grid.Column="2" Click="Btn_AddProcess" />
     </Grid>
 </Window>

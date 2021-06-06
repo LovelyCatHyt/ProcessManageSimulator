@@ -19,6 +19,9 @@ namespace ProcessManageCore.Singleton
         public long ElapsedPeriod { get; private set; }
         public event Action<OS> updateEvent;
         public readonly CPU[] cpuList;
+        public Process[] ReadyList => readyList.ToArray();
+        public Process[] HangupList => hangupList.ToArray();
+        public Process[] WaitForMemoryList => waitForMemoryList.ToArray();
 
         private readonly MemoryManager memoryMgr;
         /// <summary>

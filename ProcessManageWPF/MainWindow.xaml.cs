@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
@@ -18,10 +20,12 @@ namespace ProcessManageWPF
         private readonly OS os;
         private Timer simulateTimer;
         private int simulateStep = 1;
-
+        private NewProcessDialog newProcessWindow;
         public MainWindow()
         {
             InitializeComponent();
+
+            Closed += (sender, args) => newProcessWindow.Close();
             os = new OS(App.cfg.cpuCount, App.cfg.memorySize);
 
             for (var index = 0; index < os.cpuList.Length; index++)
@@ -31,42 +35,45 @@ namespace ProcessManageWPF
             }
             simulateTimer = new Timer(250);
             simulateTimer.Elapsed += Update;
-            simulateTimer.Start();
+            simulateTimer.Enabled = false;
+            OSInfoUpdate();
         }
 
         private void Update(object o, ElapsedEventArgs e)
         {
-            os.Update(simulateStep); OSInfoUpdate(os);
+            os.Update(simulateStep); 
+            OSInfoUpdate();
         }
 
-        private void OSInfoUpdate(OS obj)
+        private void OSInfoUpdate()
         {
             Dispatcher.Invoke(() =>
             {
                 // 更新进程进度条
-                foreach (var item in processList.Items)
+                //foreach (var item in processList.Items)
+                //{
+                //    ((ProcessUI)item).UpdateProperties();
+                //}
+                List<ProcessVisitor> processes = new List<ProcessVisitor>(processList.Items.OfType<ProcessVisitor>());
+                for (var i = 0; i < processes.Count; i++)
                 {
-                    ((ProcessUI)item).UpdateProperties();
-                }
-                for (var i = 0; i < processList.Items.Count; i++)
-                {
-                    var processUi = (ProcessUI)processList.Items[i];
-                    if (processUi.Killed)
-                    {
-                        processList.Items.RemoveAt(i);
-                        i--;
-                    }
+                    var processUi = processes[i];
+                    //if (processUi.Killed)
+                    //{
+                    //    processList.Items.RemoveAt(i);
+                    //    i--;
+                    //}
                 }
 
                 // 更新进程信息
-                if (processList.SelectedItem != null)
-                {
-                    processFullInfo.ApplyData(((ProcessUI)processList.SelectedItem).bindingProcess);
-                }
-                else
-                {
-                    processFullInfo.ClearData();
-                }
+                //if (processList.SelectedItem != null)
+                //{
+                //    processFullInfo.ApplyData(((ProcessUI)processList.SelectedItem).bindingProcess);
+                //}
+                //else
+                //{
+                //    processFullInfo.ClearData();
+                //}
 
                 // 更新CPU进度条
                 foreach (UIElement cpuPanelChild in cpuPanel.Children)
@@ -76,29 +83,57 @@ namespace ProcessManageWPF
 
                 // 已运行时间片数目
                 labelTimeCount.Content = os.ElapsedPeriod;
+                
+                // 就绪队列
+                ResetProcessList(readyList, os.ReadyList);
+                // 挂起队列
+                ResetProcessList(hangupList, os.HangupList);
+                // 后备队列
+                ResetProcessList(waitForMemoryList, os.WaitForMemoryList);
             }, DispatcherPriority.Normal);
+        }
+
+        private void ResetProcessList(ListView listView, Process[] list)
+        {
+            listView.Items.Clear();
+            foreach (var process in list)
+            {
+                ProcessVisitor v = new ProcessVisitor(process);
+                listView.Items.Add(v);
+            }
         }
 
         private void AddProcess(Process p)
         {
             os.AddNewProcess(p);
-            ProcessUI pUI = new ProcessUI(p);
-            processList.Items.Add(pUI);
+            processList.Items.Add(new ProcessVisitor(p));
+            OSInfoUpdate();
         }
 
         private void Btn_AddProcess(object sender, RoutedEventArgs e)
         {
-            NewProcessDialog window = new NewProcessDialog();
-            window.addNewProcess += AddProcess;
-            window.Show();
+            if (newProcessWindow == null)
+            {
+                newProcessWindow = new NewProcessDialog();
+                newProcessWindow.addNewProcess += AddProcess;
+                newProcessWindow.Show();
+                newProcessWindow.Closed += (o, args) => newProcessWindow = null;
+            }
+            else
+            {
+                newProcessWindow.Show();
+                // newProcessWindow.Activate();
+            }
         }
 
         private void ProcessList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (e.AddedItems.Count > 0)
+            if (processList.SelectedItem != null)
             {
-                var processUi = (ProcessUI)e.AddedItems[0];
-                processFullInfo.ApplyData(processUi.bindingProcess);
+                var processVisitor = (ProcessVisitor)processList.SelectedItem;
+                processFullInfo.ApplyData(processVisitor.process);
+                var focus = (ProcessVisitor)FindResource("focusProcess");
+                focus.SetProcess(processVisitor.process);
             }
         }
 

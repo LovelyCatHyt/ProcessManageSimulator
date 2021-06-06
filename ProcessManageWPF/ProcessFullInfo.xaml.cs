@@ -10,15 +10,19 @@ namespace ProcessManageWPF
     /// </summary>
     public partial class ProcessFullInfo : UserControl
     {
+        private readonly ProcessVisitor _hotProcessVisitor;
         public ProcessFullInfo()
         {
             InitializeComponent();
+            _hotProcessVisitor = (ProcessVisitor)FindResource("hotProcess");
         }
 
         public void ApplyData(Process p)
         {
+            _hotProcessVisitor.SetProcess(p);
             textPid.Text = p.PID.ToString();
-            textName.Text = p.name;
+            // textName.Text = p.name;
+            
             comboBoxProcessType.SelectedIndex = p.type switch
             {
                 ProcessType.System => 0,
@@ -51,7 +55,7 @@ namespace ProcessManageWPF
         public void ClearData()
         {
             textPid.Text = "";
-            textName.Text = "";
+            // textName.Text = "";
             comboBoxProcessType.SelectedIndex = -1;
             textTimeTotal.Text = "0";
             textTimeElapsed.Text = "0";
@@ -80,6 +84,11 @@ namespace ProcessManageWPF
                 int.Parse(textMemory.Text)
             );
             return temp;
+        }
+
+        private void TextName_OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            
         }
     }
 }

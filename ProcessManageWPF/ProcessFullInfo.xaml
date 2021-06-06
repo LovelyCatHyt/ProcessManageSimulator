@@ -4,8 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ProcessManageWPF"
+             xmlns:system="clr-namespace:System;assembly=System.Runtime"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="200">
+    <UserControl.Resources>
+        <local:ProcessVisitor x:Key="hotProcess" />
+    </UserControl.Resources>
     <Grid >
         <GroupBox Grid.Row="0" Header="进程信息" >
             <StackPanel Orientation="Vertical" Grid.Row="1">
@@ -35,7 +39,7 @@
                         <ColumnDefinition Width="5*"/>
                     </Grid.ColumnDefinitions>
                     <Label Content="进程名称"/>
-                    <TextBox Grid.Column="1" Name="textName" Text="" FontWeight="Normal" HorizontalAlignment="Stretch" VerticalAlignment="Center"></TextBox>
+                    <TextBox Grid.Column="1" Name="textName" TextChanged="TextName_OnTextChanged" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=Default}"  HorizontalAlignment="Stretch" VerticalAlignment="Center"></TextBox>
                 </Grid>
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -43,7 +47,7 @@
                         <ColumnDefinition Width="5*"/>
                     </Grid.ColumnDefinitions>
                     <Label Content="总时间"/>
-                    <TextBox Grid.Column="1" Name="textTimeTotal" Text="0" FontWeight="Normal" HorizontalAlignment="Stretch" VerticalAlignment="Center"></TextBox>
+                    <TextBox Grid.Column="1" Name="textTimeTotal" Text="16" FontWeight="Normal" HorizontalAlignment="Stretch" VerticalAlignment="Center"></TextBox>
                 </Grid>
                 <Grid>
                     <Grid.ColumnDefinitions>
