@@ -10,7 +10,7 @@ namespace ProcessManageCore.Entity
     public class MemoryBlock
     {
         public bool occupied;
-        public int occupyingProcessPID;
+        public int occupyingProcessPID = -1;
         public int startPos;
         public int length;
 
@@ -48,6 +48,12 @@ namespace ProcessManageCore.Entity
             {
                 throw new MemoryRequestTooLargeException();
             }
+        }
+
+        public void Release()
+        {
+            occupied = false;
+            occupyingProcessPID = -1;
         }
 
         /// <summary>

@@ -48,9 +48,13 @@ namespace ProcessManageCore.Entity
         /// </summary>
         public string name;
         /// <summary>
-        /// 需求运行时间 <para>单位? 一个模拟器要什么单位🐕</para>
+        /// 总需求运行时间
         /// </summary>
-        public int requiredTime;
+        public int totalTime;
+        /// <summary>
+        /// 剩余运行时间 <para>单位? 一个模拟器要什么单位🐕</para>
+        /// </summary>
+        public int remainedTime;
         /// <summary>
         /// 需要的内存
         /// </summary>
@@ -79,12 +83,12 @@ namespace ProcessManageCore.Entity
         public event Action<Process> waitForMemoryEvent;
         public event Action<Process> finishedEvent;
 
-        public Process(ProcessType type, int pid, string name, int requiredTime, int requiredMemory, ProcessState state, bool isIndependent, int[] preProcessList, int[] subsequenceProcessList)
+        public Process(ProcessType type, int pid, string name, int remainedTime, int requiredMemory, ProcessState state, bool isIndependent, int[] preProcessList, int[] subsequenceProcessList)
         {
             this.type = type;
             PID = pid;
             this.name = name;
-            this.requiredTime = requiredTime;
+            totalTime = this.remainedTime = remainedTime;
             this.requiredMemory = requiredMemory;
             this.state = state;
             this.isIndependent = isIndependent;
@@ -158,7 +162,7 @@ namespace ProcessManageCore.Entity
         public override string ToString() =>
             $"[{PID:D4}] {name}" +
             $": state: {state}, " +
-            $"requiredTime: {requiredTime}, " +
+            $"remainedTime: {remainedTime}, " +
             $"isIndependent: {isIndependent}, " +
             $"priority: {priority}, " +
             $"preList: {preProcessList.Aggregate("", (s, i) => s + i)}, " +

@@ -1,16 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using ProcessManageCore.Entity;
 using Process = ProcessManageCore.Entity.Process;
 
 namespace ProcessManageWPF
@@ -22,6 +14,7 @@ namespace ProcessManageWPF
     {
         private double _progress;
 
+        public bool Killed { get; private set; }
         /// <summary>
         /// 当前进度, 从0到1
         /// </summary>
@@ -40,25 +33,36 @@ namespace ProcessManageWPF
         /// 这个UI元素所绑定的进程
         /// </summary>
         public readonly Process bindingProcess;
-        /// <summary>
-        /// 进程需要的总时间
-        /// </summary>
-        public readonly int totalTime;
-
+        
         public ProcessUI(Process bindingProcess = null)
         {
             InitializeComponent();
 
             this.bindingProcess = bindingProcess;
             Debug.Assert(bindingProcess != null, nameof(this.bindingProcess) + " != null");
-            totalTime = bindingProcess.requiredTime;
+            bindingProcess.killedEvent += OnProcessKilled;
+            labelName.Content = bindingProcess.name;
             pid.Content = bindingProcess.PID;
-            label.Content = bindingProcess.name;
+            // labelName.Content = bindingProcess.name;
+        }
+        
+        private void OnProcessKilled(Process obj)
+        {
+            Killed = true;
         }
 
         public void UpdateProperties()
         {
-            Progress = 1 - (double)bindingProcess.requiredTime / totalTime;
+            Progress = 1 - (double)bindingProcess.remainedTime / bindingProcess.totalTime;
+            var colorBrush = ((SolidColorBrush)progressBarContent.Fill);
+            colorBrush.Color = bindingProcess.state switch
+            {
+                ProcessState.Ready => Color.FromRgb(0, 200, 100),
+                ProcessState.WaitForMemory => Color.FromRgb(200, 30, 0),
+                ProcessState.HangUp => Color.FromRgb(64, 64, 64),
+                ProcessState.Running => Color.FromRgb(60, 100, 255),
+                _ => Color.FromRgb(0, 0, 0)
+            };
         }
 
         private void OnLayoutUpdated(object sender, EventArgs e)

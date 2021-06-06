@@ -1,6 +1,4 @@
-﻿using System;
-using System.Drawing;
-using System.IO;
+﻿using System.IO;
 using Newtonsoft.Json;
 using System.Windows;
 
@@ -17,13 +15,13 @@ namespace ProcessManageWPF
         {
             try
             {
-                if (e.Args.Length>0)
+                if (e.Args.Length > 0)
                 {
-                    cfg = JsonConvert.DeserializeObject<Config>(File.ReadAllText(string.IsNullOrEmpty(e.Args[0]) ? "config.json" : e.Args[0]));
+                    cfg = JsonConvert.DeserializeObject<Config>(File.ReadAllText(e.Args[0]));
                 }
                 else
                 {
-                    cfg = Config.defaultConfig;
+                    cfg = JsonConvert.DeserializeObject<Config>(File.ReadAllText("config.json"));
                 }
                 // Console.WriteLine("Config loaded.", Color.LawnGreen);
             }

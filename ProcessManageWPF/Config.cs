@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ProcessManageWPF
+﻿namespace ProcessManageWPF
 {
     public class Config
     {

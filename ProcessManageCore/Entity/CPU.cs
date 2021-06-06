@@ -68,7 +68,7 @@ namespace ProcessManageCore.Entity
             if (IsOccupied)
             {
                 var processPID = occupyingProcess.ToString();
-                var remainedTime = ProcessTable.GetProcess(occupyingProcess).requiredTime.ToString();
+                var remainedTime = ProcessTable.GetProcess(occupyingProcess).remainedTime.ToString();
                 s.AppendFormat(", process: {0}, remainedTime: {1}", processPID, remainedTime);
             }
             return s.ToString();

@@ -5,12 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProcessManageWPF"
         mc:Ignorable="d"
-        Title="进程模拟器 - by Hyt" Height="500" Width="800">
+        Title="进程模拟器 - by Hyt" Height="500" Width="1000">
     <Grid  Margin="10,10,10,10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="5px"/>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="5"/>
             <RowDefinition Height="5*"/>
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
@@ -19,20 +18,55 @@
             <ColumnDefinition Width="5"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <GridSplitter ResizeDirection="Rows" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
+        <StackPanel Grid.Column="0" Name="cpuPanel" Orientation="Vertical"/>
+        <GridSplitter ResizeDirection="Rows" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
                       VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-        <ListView Grid.Column="0" Grid.Row="3" 
-                  HorizontalAlignment="Stretch" VerticalContentAlignment="Stretch" Name="processList">
+        <ListView Grid.Column="0" Grid.Row="2" 
+                  HorizontalAlignment="Stretch" VerticalContentAlignment="Stretch" Name="processList" SelectionChanged="ProcessList_SelectionChanged">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                 </Style>
             </ListView.ItemContainerStyle>
         </ListView>
-        <GridSplitter ResizeDirection="Columns" Grid.Row="3" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-        <Button Content="AddProcess" HorizontalAlignment="Center" VerticalAlignment="Center"
-                Width="100" Height="50" Margin="0,0,0,0" 
-                Grid.Row="4" Grid.ColumnSpan="3"
-                Grid.Column="0" Click="Btn_AddProcess" />
+        <GridSplitter Grid.Row="0" ResizeDirection="Columns" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.RowSpan="4"/>
+        <Grid Grid.Row="0" Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="2*"/>
+                <!--<RowDefinition Height="1*"/>-->
+            </Grid.RowDefinitions>
+            <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="已运行时间片数目:"></Label>
+                    <Label Name="labelTimeCount" Content="0"/>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Grid.Row="1" Orientation="Vertical">
+                <Grid>
+                    <Label Content="最大帧率(FPS): " HorizontalAlignment="Left"/>
+                    <Slider x:Name="fpsSlider" Maximum="120" MinWidth="100" Value="10" Margin="90,0,60,0" VerticalAlignment="Center" IsSnapToTickEnabled="True" Minimum="1" />
+                    <TextBox Name="textFPS" TextChanged="OnTextFPSChanged" Text="{Binding Value, ElementName=fpsSlider, Mode=TwoWay}" MinWidth="50" HorizontalAlignment="Right" VerticalAlignment="Center" Width="50"></TextBox>
+                </Grid>
+                <Grid>
+                    <Label Content="每帧步长: " HorizontalAlignment="Left"></Label>
+                    <Slider Name="stepSlider" Maximum="120" MinWidth="100" Value="10" Margin="90,0,60,0" VerticalAlignment="Center" IsSnapToTickEnabled="True" Minimum="1" />
+                    <TextBox Name="textStepPerFrame" TextChanged="OnTextStepPerFrameChanged" Text="{Binding Value, ElementName=stepSlider, Mode=TwoWay}" MinWidth="50" HorizontalAlignment="Right" VerticalAlignment="Center" Width="50"></TextBox>
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Name="btnRunStop" Click="BtnRunStop_OnClick" Content="暂停"></Button>
+                    <Button Grid.Column="1" Name="btnStepRun" Click="BtnStepRun_OnClick" Content="步进"></Button>
+                </Grid>
+            </StackPanel>
+        </Grid>
+        <local:ProcessFullInfo x:Name="processFullInfo" Grid.Row="2" Grid.Column="2" />
+        <Button Content="添加进程" HorizontalAlignment="Center" VerticalAlignment="Center"
+                Width="100" Height="50"
+                Grid.Row="3"
+                Grid.Column="2" Click="Btn_AddProcess" />
     </Grid>
 </Window>

@@ -1,0 +1,26 @@
+﻿<Window x:Class="ProcessManageWPF.NewProcessDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ProcessManageWPF"
+        mc:Ignorable="d"
+        Title="NewProcessDialog" Height="300" Width="200">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="5*"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+        <local:ProcessFullInfo x:Name="processFullInfo"></local:ProcessFullInfo>
+        <DockPanel Grid.Row="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Button Name="btnSubmit" Click="Submit" Content="确定添加" HorizontalAlignment="Center" VerticalAlignment="Center" Height="25" VerticalContentAlignment="Center" FlowDirection="LeftToRight"></Button>
+                <Button Grid.Column="1" Name="btnCancel" Click="Cancel" Content="取消" HorizontalAlignment="Center" VerticalAlignment="Center" Height="25" VerticalContentAlignment="Center" FlowDirection="LeftToRight"></Button>
+            </Grid>
+        </DockPanel>
+    </Grid>
+</Window>

@@ -18,8 +18,8 @@ namespace ProcessManageCore.Singleton
         /// </summary>
         public long ElapsedPeriod { get; private set; }
         public event Action<OS> updateEvent;
+        public readonly CPU[] cpuList;
 
-        private readonly CPU[] cpuList;
         private readonly MemoryManager memoryMgr;
         /// <summary>
         /// 就绪队列
@@ -62,8 +62,8 @@ namespace ProcessManageCore.Singleton
                 {
                     cpu.timePhrase++;
                     var process = ProcessTable.GetProcess(cpu.occupyingProcess);
-                    process.requiredTime--;
-                    if (process.requiredTime == 0)
+                    process.remainedTime--;
+                    if (process.remainedTime == 0)
                     {
                         process.OnFinished();
                         KillProcess(process.PID);

@@ -33,7 +33,7 @@ namespace ProcessManageCore.Singleton
         public MemoryBlock RequestMemory(int length, int process)
         {
             int visited = 0;
-            int index = _current;
+            int index = _current % _availableBlocks.Count;
             // 首次适应算法
             while (visited < _availableBlocks.Count)
             {
@@ -111,7 +111,7 @@ namespace ProcessManageCore.Singleton
             // I know it's slow, but who cares? XD
             // TODO-Performance: _occupiedBlocks use hashset
             _occupiedBlocks.RemoveAll(x => list.Contains(x));
-
+            list.ForEach(x=>x.Release());
             // _occupiedBlocks.Except(list);
             _availableBlocks.AddRange(list);
             _availableBlocks.Sort((x, y) => x.startPos - y.startPos);
