@@ -11,9 +11,10 @@ namespace ProcessManageWPF
     {
         public event Action<Process> addNewProcess;
 
-        public NewProcessDialog()
+        public NewProcessDialog(Window owner)
         {
             InitializeComponent();
+            Owner = owner;
         }
 
         private void Submit(object sender, RoutedEventArgs e)

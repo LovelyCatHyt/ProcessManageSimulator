@@ -29,7 +29,11 @@ namespace ProcessManageCore.Entity
         /// <summary>
         /// 运行
         /// </summary>
-        Running
+        Running,
+        /// <summary >
+        /// 终止
+        /// </summary>
+        Killed
     }
 
     public class Process
@@ -105,6 +109,7 @@ namespace ProcessManageCore.Entity
 
         public virtual void OnKilled()
         {
+            state = ProcessState.Killed;
             killedEvent?.Invoke(this);
         }
 

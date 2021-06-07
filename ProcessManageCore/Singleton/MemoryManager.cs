@@ -33,7 +33,7 @@ namespace ProcessManageCore.Singleton
         public MemoryBlock RequestMemory(int length, int process)
         {
             int visited = 0;
-            int index = _current % _availableBlocks.Count;
+            int index = _availableBlocks.Count > 0 ? _current % _availableBlocks.Count : 0;
             // 首次适应算法
             while (visited < _availableBlocks.Count)
             {
