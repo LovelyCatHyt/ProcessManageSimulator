@@ -43,11 +43,12 @@
                       VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
         <!--进程运行列表-->
         <ListView Grid.Column="0" Grid.Row="2" 
-                  HorizontalAlignment="Stretch" VerticalContentAlignment="Stretch" Name="processList" SelectionChanged="ProcessList_SelectionChanged">
+                  HorizontalAlignment="Stretch" VerticalContentAlignment="Stretch" Name="processList">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="PID" DisplayMemberBinding="{Binding PID}" />
                     <GridViewColumn Header="进程名" DisplayMemberBinding="{Binding Name}" />
+                    <GridViewColumn Header="优先级" DisplayMemberBinding="{Binding Priority}" />
                     <GridViewColumn x:Name="processList_ProgressBarColumn" Header="运行进度" Width="500">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
@@ -174,7 +175,7 @@
                 <!--<ColumnDefinition/>-->
             </Grid.ColumnDefinitions>
             <GroupBox  Header="就绪队列">
-                <ListView Name="readyList" HorizontalAlignment="Stretch" SelectedItem="{Binding SelectedItem, ElementName=processList, Mode=TwoWay, UpdateSourceTrigger=Default}">
+                <ListView Name="readyList" HorizontalAlignment="Stretch" SelectedItem="{Binding SelectedItem, ElementName=processList, Mode=TwoWay, NotifyOnTargetUpdated=True}">
                     <ListView.View>
                         <GridView>
                             <GridViewColumn Header="PID" DisplayMemberBinding="{Binding PID}" />

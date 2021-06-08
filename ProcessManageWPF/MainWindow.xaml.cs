@@ -18,14 +18,16 @@ namespace ProcessManageWPF
     public partial class MainWindow : Window
     {
         private readonly OS os;
-        private Timer simulateTimer;
-        private int simulateStep = 1;
-        private NewProcessDialog newProcessWindow;
+        private readonly Timer _simulateTimer;
+        private int _simulateStep = 1;
+        private NewProcessDialog _newProcessWindow;
+        private Dictionary<Process, ProcessVisitor> _visitorDictionary;
+
         public MainWindow()
         {
             InitializeComponent();
 
-            Closed += (sender, args) => newProcessWindow?.Close();
+            Closed += (sender, args) => _newProcessWindow?.Close();
             os = new OS(App.cfg.cpuCount, App.cfg.memorySize);
 
             for (var index = 0; index < os.cpuList.Length; index++)
@@ -33,9 +35,12 @@ namespace ProcessManageWPF
                 var cpu = os.cpuList[index];
                 cpuPanel.Children.Add(new CPUUI(cpu, index));
             }
-            simulateTimer = new Timer(250);
-            simulateTimer.Elapsed += Update;
-            simulateTimer.Enabled = false;
+
+            _visitorDictionary = new Dictionary<Process, ProcessVisitor>();
+
+            _simulateTimer = new Timer(250);
+            _simulateTimer.Elapsed += Update;
+            _simulateTimer.Enabled = false;
             OnTextFPSChanged(this, null);
             OnTextStepPerFrameChanged(this, null);
             OSInfoUpdate();
@@ -43,7 +48,7 @@ namespace ProcessManageWPF
 
         private void Update(object o, ElapsedEventArgs e)
         {
-            os.Update(simulateStep); 
+            os.Update(_simulateStep); 
             OSInfoUpdate();
         }
 
@@ -60,6 +65,7 @@ namespace ProcessManageWPF
         /// </summary>
         private void OSInfoUpdateNow()
         {
+            var cachedSelected = processList.SelectedItem;
             // 更新CPU进度条
             foreach (UIElement cpuPanelChild in cpuPanel.Children)
             {
@@ -70,12 +76,14 @@ namespace ProcessManageWPF
             labelTimeCount.Content = os.ElapsedPeriod;
 
             // 移除已经终止的进程, 同时更新进程访问器
+
             for (var i = 0; i < processList.Items.Count; i++)
             {
                 var processVisitor = (ProcessVisitor) processList.Items[i];
                 if (processVisitor.State == ProcessState.Killed)
                 {
                     processList.Items.RemoveAt(i);
+                    _visitorDictionary.Remove(processVisitor.process);
                     i--;
                 }
                 else
@@ -83,63 +91,49 @@ namespace ProcessManageWPF
                     processVisitor.NotifyPropertyChange();
                 }
             }
-
             // 缓存元素列表为易于 Linq 的形式
             var visitors = processList.Items.Cast<ProcessVisitor>() as ProcessVisitor[] ?? processList.Items.Cast<ProcessVisitor>().ToArray();
 
             // 就绪队列
-            ResetProcessList(readyList, visitors.Where(x => os.ReadyList.Contains(x.process)));
+            ResetProcessList(readyList, os.ReadyList);
             // 挂起队列
-            ResetProcessList(hangupList, visitors.Where(x => os.HangupList.Contains(x.process)));
+            ResetProcessList(hangupList, os.HangupList);
             // 后备队列
-            ResetProcessList(waitForMemoryList, visitors.Where(x => os.WaitForMemoryList.Contains(x.process)));
+            ResetProcessList(waitForMemoryList, os.WaitForMemoryList);
+            if(processList.SelectedItem == null) processList.SelectedItem = cachedSelected;
         }
 
-        private void ResetProcessList(ListView listView, IEnumerable<ProcessVisitor> list)
+        private void ResetProcessList(ListView listView, Process[] list)
         {
-            listView.Items.Clear();
-            foreach (var process in list)
-            {
-                // ProcessVisitor v = new ProcessVisitor(process);
-                listView.Items.Add(process);
-            }
+            listView.ItemsSource = list.Select(x => _visitorDictionary[x]);
         }
 
         private void AddProcess(Process p)
         {
             os.AddNewProcess(p);
-            processList.Items.Add(new ProcessVisitor(p));
+            var processVisitor = new ProcessVisitor(p);
+            processList.Items.Add(processVisitor);
+            _visitorDictionary.Add(p, processVisitor);
             OSInfoUpdateNow();
         }
 
         private void Btn_AddProcess(object sender, RoutedEventArgs e)
         {
-            if (newProcessWindow == null)
+            if (_newProcessWindow == null)
             {
-                newProcessWindow = new NewProcessDialog(this);
-                newProcessWindow.addNewProcess += AddProcess;
-                newProcessWindow.Show();
-                newProcessWindow.Closed += (o, args) => newProcessWindow = null;
+                _newProcessWindow = new NewProcessDialog(this);
+                _newProcessWindow.addNewProcess += AddProcess;
+                _newProcessWindow.Show();
+                _newProcessWindow.Closed += (o, args) => _newProcessWindow = null;
             }
             else
             {
-                newProcessWindow.Activate();
-                newProcessWindow.Topmost = true;
+                _newProcessWindow.Activate();
+                _newProcessWindow.Topmost = true;
                 // newProcessWindow.Activate();
             }
         }
-
-        private void ProcessList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            //if (processList.SelectedItem != null)
-            //{
-            //    var processVisitor = (ProcessVisitor)processList.SelectedItem;
-            //    processFullInfo.ApplyData(processVisitor.process);
-            //    var focus = (ProcessVisitor)FindResource("focusProcess");
-            //    focus.SetProcess(processVisitor.process);
-            //}
-        }
-
+        
         private void OnTextFPSChanged(object sender, RoutedEventArgs e)
         {
             if (!double.TryParse(textFPS.Text, out var fps))
@@ -148,29 +142,29 @@ namespace ProcessManageWPF
             }
             fps = Math.Clamp(fps, 0.0625, 120);
             textFPS.Text = fps.ToString(CultureInfo.CurrentCulture);
-            if (simulateTimer != null) simulateTimer.Interval = 1000 / fps;
+            if (_simulateTimer != null) _simulateTimer.Interval = 1000 / fps;
         }
 
         private void OnTextStepPerFrameChanged(object sender, RoutedEventArgs e)
         {
-            if (!int.TryParse(textStepPerFrame.Text, out simulateStep))
+            if (!int.TryParse(textStepPerFrame.Text, out _simulateStep))
             {
-                simulateStep = 1;
+                _simulateStep = 1;
             }
-            simulateStep = Math.Clamp(simulateStep, 1, 1000);
-            textStepPerFrame.Text = simulateStep.ToString();
+            _simulateStep = Math.Clamp(_simulateStep, 1, 1000);
+            textStepPerFrame.Text = _simulateStep.ToString();
         }
 
         private void BtnRunStop_OnClick(object sender, RoutedEventArgs e)
         {
-            if (simulateTimer.Enabled)
+            if (_simulateTimer.Enabled)
             {
-                simulateTimer.Enabled = false;
+                _simulateTimer.Enabled = false;
                 btnRunStop.Content = "继续";
             }
             else
             {
-                simulateTimer.Enabled = true;
+                _simulateTimer.Enabled = true;
                 btnRunStop.Content = "暂停";
             }
         }
@@ -193,5 +187,5 @@ namespace ProcessManageWPF
                 OSInfoUpdateNow();
             }
         }
-    }
+        }
 }

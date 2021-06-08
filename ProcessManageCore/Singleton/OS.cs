@@ -220,7 +220,10 @@ namespace ProcessManageCore.Singleton
         {
             readyList.Add(p);
             p.OnReady();
-            readyList.Sort((x, y) => x.priority - y.priority);
+            var sorted = readyList.OrderBy(x => x.priority).ToArray();
+            readyList.Clear();
+            // readyList.Capacity= sorted.Count();
+            readyList.AddRange(sorted);
         }
 
         /// <summary>
@@ -312,7 +315,7 @@ namespace ProcessManageCore.Singleton
             strBuilder.AppendLine("WaitForMemory process:");
             waitForMemoryList.ForEach(p => strBuilder.AppendFormat("\t{0}\n", p));
             strBuilder.AppendLine("HangUp process:");
-            hangupList.ForEach(p=>strBuilder.AppendFormat("\t{0}\n", p));
+            hangupList.ForEach(p => strBuilder.AppendFormat("\t{0}\n", p));
             return strBuilder.ToString();
         }
     }

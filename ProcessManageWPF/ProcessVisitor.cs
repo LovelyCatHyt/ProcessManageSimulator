@@ -28,6 +28,9 @@ namespace ProcessManageWPF
 
         public ProcessType ProcessType => process?.type ?? ProcessType.System;
 
+        /// <summary>
+        /// 进程名
+        /// </summary>
         public string Name
         {
             get => process?.name ?? "";
@@ -37,6 +40,11 @@ namespace ProcessManageWPF
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Name)));
             }
         }
+
+        /// <summary>
+        /// 优先级
+        /// </summary>
+        public int Priority => process?.priority ?? 0;
 
         /// <summary>
         /// 进度
