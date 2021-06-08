@@ -80,7 +80,7 @@
                 </Grid>
                 <Grid>
                     <Label Content="每帧步长: " HorizontalAlignment="Left"></Label>
-                    <Slider Name="stepSlider" Maximum="120" MinWidth="100" Value="10" Margin="90,0,60,0" VerticalAlignment="Center" IsSnapToTickEnabled="True" Minimum="1" />
+                    <Slider Name="stepSlider" Maximum="120" MinWidth="100" Value="1" Margin="90,0,60,0" VerticalAlignment="Center" IsSnapToTickEnabled="True" Minimum="1" />
                     <TextBox Name="textStepPerFrame" TextChanged="OnTextStepPerFrameChanged" Text="{Binding Value, ElementName=stepSlider, Mode=TwoWay}" MinWidth="50" HorizontalAlignment="Right" VerticalAlignment="Center" Width="50"></TextBox>
                 </Grid>
                 <Grid>
@@ -152,21 +152,20 @@
                         <Label Content="内存需求"/>
                         <TextBox Grid.Column="1" Name="textMemory" Text="{Binding MemoryUsage}" FontWeight="Normal" HorizontalAlignment="Stretch" VerticalAlignment="Center"></TextBox>
                     </Grid>
-                    <!--<Grid>
+                    <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="3*"/>
-                            <ColumnDefinition Width="5*"/>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <Label Content="占用内存块"/>
-                        <TextBlock Grid.Column="1" Name="textMemBlock" Text="0" FontWeight="Normal" HorizontalAlignment="Stretch" VerticalAlignment="Center"></TextBlock>
-                    </Grid>-->
+                        <Button Content="添加进程" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                Grid.Row="0"
+                                Grid.Column="0" Click="Btn_AddProcess" Cursor="Hand" Margin="5,5,5,5" />
+                        <Button x:Name="btnKillProcess" Content="终止进程" Click="BtnKillProcess_OnClick" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5,5,5,5"></Button>
+                    </Grid>
                 </StackPanel>
             </GroupBox>
         </Grid>
-        <Button Content="添加进程" HorizontalAlignment="Center" VerticalAlignment="Bottom"
-                Width="80" Height="30"
-                Grid.Row="2"
-                Grid.Column="2" Click="Btn_AddProcess" Margin="0,0,0,10" Cursor="Hand" />
+
         <Grid Grid.Row="4" Grid.Column="0" DataContext="{Binding SelectedItem, ElementName=processList}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
@@ -175,7 +174,7 @@
                 <!--<ColumnDefinition/>-->
             </Grid.ColumnDefinitions>
             <GroupBox  Header="就绪队列">
-                <ListView Name="readyList" HorizontalAlignment="Stretch">
+                <ListView Name="readyList" HorizontalAlignment="Stretch" SelectedItem="{Binding SelectedItem, ElementName=processList, Mode=TwoWay, UpdateSourceTrigger=Default}">
                     <ListView.View>
                         <GridView>
                             <GridViewColumn Header="PID" DisplayMemberBinding="{Binding PID}" />
@@ -185,7 +184,7 @@
                 </ListView>
             </GroupBox>
             <GroupBox  Grid.Column="1" Header="挂起队列">
-                <ListView Name="hangupList" HorizontalAlignment="Stretch">
+                <ListView Name="hangupList" HorizontalAlignment="Stretch" SelectedItem="{Binding SelectedItem, ElementName=processList, Mode=TwoWay}">
                     <ListView.View>
                         <GridView>
                             <GridViewColumn Header="PID" DisplayMemberBinding="{Binding PID}" />
@@ -195,7 +194,7 @@
                 </ListView>
             </GroupBox>
             <GroupBox  Grid.Column="2" Header="后备队列">
-                <ListView Name="waitForMemoryList" HorizontalAlignment="Stretch">
+                <ListView Name="waitForMemoryList" HorizontalAlignment="Stretch" SelectedItem="{Binding SelectedItem, ElementName=processList, Mode=TwoWay}">
                     <ListView.View>
                         <GridView>
                             <GridViewColumn Header="PID" DisplayMemberBinding="{Binding PID}" />

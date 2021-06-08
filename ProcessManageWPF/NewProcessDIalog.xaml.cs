@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Input;
 using ProcessManageCore.Entity;
 
 namespace ProcessManageWPF
@@ -14,6 +15,7 @@ namespace ProcessManageWPF
         public NewProcessDialog(Window owner)
         {
             InitializeComponent();
+            btnSubmit.Focus();
             Owner = owner;
         }
 
@@ -25,6 +27,14 @@ namespace ProcessManageWPF
         private void Cancel(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        private void OnKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            switch (e.Key)
+            {
+                case Key.Enter: Submit(sender, null); break;
+            }
         }
     }
 }

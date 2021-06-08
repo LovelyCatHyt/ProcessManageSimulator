@@ -47,44 +47,52 @@ namespace ProcessManageWPF
             OSInfoUpdate();
         }
 
+        /// <summary>
+        /// 将界面更新事件加入到 UI 线程中
+        /// </summary>
         private void OSInfoUpdate()
         {
-            Dispatcher.Invoke(() =>
+            Dispatcher.Invoke(OSInfoUpdateNow, DispatcherPriority.Normal);
+        }
+
+        /// <summary>
+        /// 操作系统信息更新
+        /// </summary>
+        private void OSInfoUpdateNow()
+        {
+            // 更新CPU进度条
+            foreach (UIElement cpuPanelChild in cpuPanel.Children)
             {
-                // 更新CPU进度条
-                foreach (UIElement cpuPanelChild in cpuPanel.Children)
+                ((CPUUI) cpuPanelChild).Update();
+            }
+
+            // 已运行时间片数目
+            labelTimeCount.Content = os.ElapsedPeriod;
+
+            // 移除已经终止的进程, 同时更新进程访问器
+            for (var i = 0; i < processList.Items.Count; i++)
+            {
+                var processVisitor = (ProcessVisitor) processList.Items[i];
+                if (processVisitor.State == ProcessState.Killed)
                 {
-                    ((CPUUI)cpuPanelChild).Update();
+                    processList.Items.RemoveAt(i);
+                    i--;
                 }
-
-                // 已运行时间片数目
-                labelTimeCount.Content = os.ElapsedPeriod;
-                
-                // 移除已经终止的进程, 同时更新进程访问器
-                for (var i = 0; i < processList.Items.Count; i++)
+                else
                 {
-                    var processVisitor = (ProcessVisitor) processList.Items[i];
-                    if (processVisitor.State == ProcessState.Killed)
-                    {
-                        processList.Items.RemoveAt(i);
-                        i--;
-                    }
-                    else
-                    {
-                        processVisitor.NotifyPropertyChange();
-                    }
+                    processVisitor.NotifyPropertyChange();
                 }
+            }
 
-                // 缓存元素列表为易于 Linq 的形式
-                var visitors = processList.Items.Cast<ProcessVisitor>() as ProcessVisitor[] ?? processList.Items.Cast<ProcessVisitor>().ToArray();
+            // 缓存元素列表为易于 Linq 的形式
+            var visitors = processList.Items.Cast<ProcessVisitor>() as ProcessVisitor[] ?? processList.Items.Cast<ProcessVisitor>().ToArray();
 
-                // 就绪队列
-                ResetProcessList(readyList, visitors.Where(x=>os.ReadyList.Contains(x.process)));
-                // 挂起队列
-                ResetProcessList(hangupList, visitors.Where(x => os.HangupList.Contains(x.process)));
-                // 后备队列
-                ResetProcessList(waitForMemoryList, visitors.Where(x => os.WaitForMemoryList.Contains(x.process)));
-            }, DispatcherPriority.Normal);
+            // 就绪队列
+            ResetProcessList(readyList, visitors.Where(x => os.ReadyList.Contains(x.process)));
+            // 挂起队列
+            ResetProcessList(hangupList, visitors.Where(x => os.HangupList.Contains(x.process)));
+            // 后备队列
+            ResetProcessList(waitForMemoryList, visitors.Where(x => os.WaitForMemoryList.Contains(x.process)));
         }
 
         private void ResetProcessList(ListView listView, IEnumerable<ProcessVisitor> list)
@@ -101,7 +109,7 @@ namespace ProcessManageWPF
         {
             os.AddNewProcess(p);
             processList.Items.Add(new ProcessVisitor(p));
-            OSInfoUpdate();
+            OSInfoUpdateNow();
         }
 
         private void Btn_AddProcess(object sender, RoutedEventArgs e)
@@ -170,6 +178,20 @@ namespace ProcessManageWPF
         private void BtnStepRun_OnClick(object sender, RoutedEventArgs e)
         {
             Update(null, null);
+        }
+
+        private void BtnKillProcess_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (processList.SelectedItems.Count >0)
+            {
+                foreach (ProcessVisitor item in processList.SelectedItems)
+                {
+                    os.KillProcess(item.PID);
+                    item.NotifyPropertyChange();
+                }
+
+                OSInfoUpdateNow();
+            }
         }
     }
 }

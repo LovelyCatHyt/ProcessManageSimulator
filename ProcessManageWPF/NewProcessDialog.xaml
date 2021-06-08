@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ProcessManageWPF"
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
-        Title="NewProcessDialog" Height="300" Width="300">
+        Title="NewProcessDialog" Height="300" Width="300" KeyDown="OnKeyDown">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="5*"/>
@@ -19,7 +19,7 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <Button Name="btnSubmit" Click="Submit" Content="确定添加" HorizontalAlignment="Center" VerticalAlignment="Center" Height="25" VerticalContentAlignment="Center" FlowDirection="LeftToRight"></Button>
+                <Button Name="btnSubmit" Click="Submit" Content="添加" HorizontalAlignment="Center" VerticalAlignment="Center" Height="25" VerticalContentAlignment="Center" FlowDirection="LeftToRight"></Button>
                 <Button Grid.Column="1" Name="btnCancel" Click="Cancel" Content="取消" HorizontalAlignment="Center" VerticalAlignment="Center" Height="25" VerticalContentAlignment="Center" FlowDirection="LeftToRight"></Button>
             </Grid>
         </DockPanel>
