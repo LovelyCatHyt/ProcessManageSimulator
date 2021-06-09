@@ -11,17 +11,6 @@
         <local:StateColorConverter x:Key="StateColorConverter"></local:StateColorConverter>
         <local:StateStringConverter x:Key="StateStringConverter"></local:StateStringConverter>
         <local:ProcessTypeConverter x:Key="ProcessTypeConverter"></local:ProcessTypeConverter>
-        <!--<ControlTemplate x:Key="simpleListTemplate">
-            <ListView HorizontalAlignment="Stretch">
-                <Label Content="Test"></Label>
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn Header="PID" DisplayMemberBinding="{Binding PID}" />
-                        <GridViewColumn Header="进程名" DisplayMemberBinding="{Binding Name}" />
-                    </GridView>
-                </ListView.View>
-            </ListView>
-        </ControlTemplate>-->
     </Window.Resources>
     <Grid  Margin="10,10,10,10">
         <Grid.RowDefinitions>
@@ -36,7 +25,24 @@
             <ColumnDefinition Width="5"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <StackPanel Grid.Column="0" Name="cpuPanel" Orientation="Vertical"/>
+        <!--CPU信息-->
+        <GroupBox Header="CPU列表">
+            <ListView Grid.Column="0" Name="cpuListView">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="序号" DisplayMemberBinding="{Binding Title}"></GridViewColumn>
+                        <GridViewColumn Header="进度" Width="500">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <ProgressBar Value="{Binding Progress, Mode=OneWay}" Maximum="1"  Height="20" Width="400"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </GroupBox>
         <GridSplitter ResizeDirection="Rows" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
                       VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
         <GridSplitter ResizeDirection="Rows" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3"
@@ -61,7 +67,6 @@
                                 </ProgressBar>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
-
                     </GridViewColumn>
                 </GridView>
             </ListView.View>

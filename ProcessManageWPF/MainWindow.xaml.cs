@@ -36,7 +36,7 @@ namespace ProcessManageWPF
             for (var index = 0; index < os.cpuList.Length; index++)
             {
                 var cpu = os.cpuList[index];
-                cpuPanel.Children.Add(new CPUUI(cpu, index));
+                cpuListView.Items.Add(new CPUVisitor{cpu = cpu, index = index});
             }
 
             _visitorDictionary = new Dictionary<Process, ProcessVisitor>();
@@ -70,9 +70,9 @@ namespace ProcessManageWPF
         {
             var cachedSelected = processList.SelectedItem;
             // 更新CPU进度条
-            foreach (UIElement cpuPanelChild in cpuPanel.Children)
+            foreach (CPUVisitor visitor in cpuListView.Items)
             {
-                ((CPUUI) cpuPanelChild).Update();
+                visitor.NotifyPropertyChange();
             }
 
             // 已运行时间片数目

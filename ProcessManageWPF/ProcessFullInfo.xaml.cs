@@ -29,37 +29,19 @@ namespace ProcessManageWPF
         /// <returns></returns>
         public Process CreateNewFromInfo(Dictionary<string, object> macro = null)
         {
-            Process temp;
-            if (macro == null)
-            {
-                temp = ProcessFactory.CreateIndependentProcess(
-                    comboBoxProcessType.SelectedIndex switch
-                    {
-                        0 => ProcessType.System,
-                        1 => ProcessType.Kernel,
-                        2 => ProcessType.User,
-                        _ => ProcessType.User
-                    },
-                    textName.Text,
-                    int.Parse(textTimeTotal.Text),
-                    int.Parse(textMemory.Text)
-                );
-            }
-            else
-            {
-                temp = ProcessFactory.CreateIndependentProcess(
-                    comboBoxProcessType.SelectedIndex switch
-                    {
-                        0 => ProcessType.System,
-                        1 => ProcessType.Kernel,
-                        2 => ProcessType.User,
-                        _ => ProcessType.User
-                    },
-                    textName.Text.ReplaceMacro(macro),
-                    int.Parse(textTimeTotal.Text),
-                    int.Parse(textMemory.Text)
-                );
-            }
+            var temp = ProcessFactory.CreateIndependentProcess(
+                comboBoxProcessType.SelectedIndex switch
+                {
+                    0 => ProcessType.System,
+                    1 => ProcessType.Kernel,
+                    2 => ProcessType.User,
+                    _ => ProcessType.User
+                },
+                macro == null ? textName.Text : textName.Text.ReplaceMacro(macro),
+                int.Parse(textTimeTotal.Text),
+                int.Parse(textMemory.Text)
+            );
+
             foreach (var preProcess in preProcessVisitorList)
             {
                 Process.SetProcessDependence(preProcess.process, temp);
