@@ -11,6 +11,14 @@ namespace ProcessManageWPF
     {
         public static Config cfg;
 
+        /// <summary>
+        /// 保存配置文件
+        /// </summary>
+        public static void SaveConfig()
+        {
+            File.WriteAllText(string.IsNullOrEmpty(cfg.cfgPath) ? Config.defaultConfig.cfgPath : cfg.cfgPath, JsonConvert.SerializeObject(cfg));
+        }
+
         private void App_OnStartup(object sender, StartupEventArgs e)
         {
             try
@@ -21,7 +29,7 @@ namespace ProcessManageWPF
                 }
                 else
                 {
-                    cfg = JsonConvert.DeserializeObject<Config>(File.ReadAllText("config.json"));
+                    cfg = JsonConvert.DeserializeObject<Config>(File.ReadAllText(Config.defaultConfig.cfgPath));
                 }
                 // Console.WriteLine("Config loaded.", Color.LawnGreen);
             }
@@ -29,7 +37,8 @@ namespace ProcessManageWPF
             {
                 cfg = Config.defaultConfig;
             }
-            File.WriteAllText("config.json", JsonConvert.SerializeObject(cfg));
+
+            SaveConfig();
         }
     }
 }

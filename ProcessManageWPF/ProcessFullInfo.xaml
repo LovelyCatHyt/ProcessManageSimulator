@@ -49,14 +49,14 @@
                     <Label Content="总时间"/>
                     <TextBox Grid.Column="1" Name="textTimeTotal" Text="16" FontWeight="Normal" HorizontalAlignment="Stretch" VerticalAlignment="Center"></TextBox>
                 </Grid>
-                <Grid>
+                <!--<Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="3*"/>
                         <ColumnDefinition Width="5*"/>
                     </Grid.ColumnDefinitions>
                     <Label Content="运行时间"/>
                     <TextBox Grid.Column="1" Name="textTimeElapsed" Text="0" FontWeight="Normal" HorizontalAlignment="Stretch" VerticalAlignment="Center"></TextBox>
-                </Grid>
+                </Grid>-->
                 <!--<Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="3*"/>

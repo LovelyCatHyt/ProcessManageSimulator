@@ -43,7 +43,8 @@
                       VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
         <!--进程运行列表-->
         <ListView Grid.Column="0" Grid.Row="2" 
-                  HorizontalAlignment="Stretch" VerticalContentAlignment="Stretch" Name="processList">
+                  HorizontalAlignment="Stretch" VerticalContentAlignment="Stretch" Name="processList"
+                  >
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="PID" DisplayMemberBinding="{Binding PID}" />
@@ -94,6 +95,7 @@
                 </Grid>
             </StackPanel>
         </StackPanel>
+        <!--进程信息-->
         <Grid Grid.Row="2" Grid.Column="2" DataContext="{Binding ElementName=processList, Path=SelectedItem}">
             <GroupBox Header="进程信息" >
                 <StackPanel Orientation="Vertical" Grid.Row="1">
@@ -166,7 +168,7 @@
                 </StackPanel>
             </GroupBox>
         </Grid>
-
+        <!--进程队列-->
         <Grid Grid.Row="4" Grid.Column="0" DataContext="{Binding SelectedItem, ElementName=processList}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
@@ -205,5 +207,34 @@
                 </ListView>
             </GroupBox>
         </Grid>
+        <!--进程依赖-->
+        <GroupBox Header="进程依赖" Grid.Column="2" Grid.Row="4">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <GroupBox Header="前驱进程">
+                    <ListView ItemsSource="{Binding SelectedItem.PreProcessList, ElementName=processList}">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="PID" DisplayMemberBinding="{Binding PID}"></GridViewColumn>
+                                <GridViewColumn Header="进程名" DisplayMemberBinding="{Binding Name}"></GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </GroupBox>
+                <GroupBox Header="后继进程" Grid.Column="1">
+                    <ListView ItemsSource="{Binding SelectedItem.SubProcessList, ElementName=processList}">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="PID" DisplayMemberBinding="{Binding PID}"></GridViewColumn>
+                                <GridViewColumn Header="进程名" DisplayMemberBinding="{Binding Name}"></GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </GroupBox>
+            </Grid>
+        </GroupBox>
     </Grid>
 </Window>

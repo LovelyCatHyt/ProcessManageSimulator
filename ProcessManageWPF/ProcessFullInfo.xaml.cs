@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.Collections.Generic;
+using System.Windows.Controls;
 using System.Windows.Media;
 using ProcessManageCore;
 using ProcessManageCore.Entity;
@@ -69,21 +70,41 @@ namespace ProcessManageWPF
         /// 从当前的信息生成一个新进程
         /// </summary>
         /// <returns></returns>
-        public Process CreateNewFromInfo()
+        public Process CreateNewFromInfo(Dictionary<string, object> macro = null)
         {
-            Process temp = ProcessFactory.CreateIndependentProcess(
-                comboBoxProcessType.SelectedIndex switch
-                {
-                    0 => ProcessType.System,
-                    1 => ProcessType.Kernel,
-                    2 => ProcessType.User,
-                    _ => ProcessType.User
-                }, 
-                textName.Text, 
-                int.Parse(textTimeTotal.Text), 
-                int.Parse(textMemory.Text)
-            );
-            return temp;
+            if (macro == null)
+            {
+                Process temp = ProcessFactory.CreateIndependentProcess(
+                        comboBoxProcessType.SelectedIndex switch
+                        {
+                            0 => ProcessType.System,
+                            1 => ProcessType.Kernel,
+                            2 => ProcessType.User,
+                            _ => ProcessType.User
+                        },
+                        textName.Text,
+                        int.Parse(textTimeTotal.Text),
+                        int.Parse(textMemory.Text)
+                    );
+                return temp;
+            }
+            else
+            {
+                Process temp = ProcessFactory.CreateIndependentProcess(
+                    comboBoxProcessType.SelectedIndex switch
+                    {
+                        0 => ProcessType.System,
+                        1 => ProcessType.Kernel,
+                        2 => ProcessType.User,
+                        _ => ProcessType.User
+                    },
+                    textName.Text.ReplaceMacro(macro),
+                    int.Parse(textTimeTotal.Text),
+                    int.Parse(textMemory.Text)
+                );
+                return temp;
+            }
+            
         }
     }
 }

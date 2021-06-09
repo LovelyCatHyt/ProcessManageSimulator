@@ -86,6 +86,7 @@ namespace ProcessManageCore.Entity
         public event Action<Process> readyEvent;
         public event Action<Process> waitForMemoryEvent;
         public event Action<Process> finishedEvent;
+        public event Action<Process, Process> preProcessFinishEvent;
 
         public Process(ProcessType type, int pid, string name, int remainedTime, int requiredMemory, ProcessState state, bool isIndependent, int[] preProcessList, int[] subsequenceProcessList)
         {
@@ -162,6 +163,7 @@ namespace ProcessManageCore.Entity
             // TODO: pre and subsequence process
             preProcessList.Remove(pid);
             DependenceClear = preProcessList.Count == 0;
+            preProcessFinishEvent?.Invoke(this, ProcessTable.GetProcess(pid));
         }
 
         public override string ToString() =>

@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
+using System.Linq;
 using System.Windows.Data;
 using System.Windows.Media;
 using ProcessManageCore.Entity;
@@ -10,7 +12,55 @@ namespace ProcessManageWPF
 {
     public class ProcessVisitor : INotifyPropertyChanged
     {
-        public Process process;
+        private Process _process;
+
+        /// <summary>
+        /// 管理这个访问器的字典
+        /// </summary>
+        public Dictionary<Process, ProcessVisitor> ownerDictionary;
+
+        public Process process
+        {
+            get => _process;
+            set
+            {
+                if (_process != null)
+                {
+                    _process.preProcessFinishEvent -= OnPreProcessFinish;
+                }
+                _process = value;
+                _process.preProcessFinishEvent += OnPreProcessFinish;
+            }
+        }
+
+        private void OnPreProcessFinish(Process arg1, Process arg2)
+        {
+
+        }
+
+        /// <summary>
+        /// 前驱进程 PID 列表
+        /// </summary>
+        public ProcessVisitor[] PreProcessList
+        {
+            get
+            {
+                var tempList = process?.preProcessList ?? new List<int>();
+                return tempList.Select(x => ownerDictionary[ProcessTable.GetProcess(x)]).ToArray();
+            }
+        }
+
+        /// <summary>
+        /// 后继进程 PID 列表
+        /// </summary>
+        public ProcessVisitor[] SubProcessList
+        {
+            get
+            {
+                var tempList = process?.subsequenceProcessList ?? new List<int>();
+                return tempList.Select(x => ownerDictionary[ProcessTable.GetProcess(x)]).ToArray();
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

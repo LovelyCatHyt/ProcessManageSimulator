@@ -46,6 +46,8 @@ namespace ProcessManageWPF
             OSInfoUpdate();
         }
 
+        // TODO: preProcessList and postProcessList
+
         private void Update(object o, ElapsedEventArgs e)
         {
             os.Update(_simulateStep); 
@@ -114,6 +116,7 @@ namespace ProcessManageWPF
             var processVisitor = new ProcessVisitor(p);
             processList.Items.Add(processVisitor);
             _visitorDictionary.Add(p, processVisitor);
+            processVisitor.ownerDictionary = _visitorDictionary;
             OSInfoUpdateNow();
         }
 
