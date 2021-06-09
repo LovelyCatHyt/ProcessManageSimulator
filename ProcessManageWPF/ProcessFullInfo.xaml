@@ -73,6 +73,21 @@
                     <Label Content="内存需求"/>
                     <TextBox Grid.Column="1" Name="textMemory" Text="0" FontWeight="Normal" HorizontalAlignment="Stretch" VerticalAlignment="Center"></TextBox>
                 </Grid>
+                <StackPanel>
+                    <Label Content="前驱进程"/>
+                    <ListView Name="preProcessList" MinHeight="100">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="PID" DisplayMemberBinding="{Binding PID}"></GridViewColumn>
+                                <GridViewColumn Header="进程名" DisplayMemberBinding="{Binding Name}"></GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                    <WrapPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Click="Btn_OnAddPreProcess" Content="+" HorizontalAlignment="Right" Width="15" ></Button>
+                        <Button Click="Btn_OnRemovePreProcess" Content="-" HorizontalAlignment="Right" Width="15" Margin="5,0,0,0" ></Button>
+                    </WrapPanel>
+                </StackPanel>
                 <!--<Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="3*"/>

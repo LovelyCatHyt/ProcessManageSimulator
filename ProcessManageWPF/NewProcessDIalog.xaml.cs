@@ -31,11 +31,6 @@ namespace ProcessManageWPF
         private void Submit(object sender, RoutedEventArgs e)
         {
             var process = processFullInfo.CreateNewFromInfo(_macros);
-            // Test
-            if (process.PID != 0)
-            {
-                Process.SetProcessDependence(ProcessTable.GetProcess(0), process);
-            }
             addNewProcess?.Invoke(process);
             App.cfg.SetStringCache("NewProcess.Name", processFullInfo.textName.Text);
             App.cfg.SetIntCache("NewProcess.Memory",

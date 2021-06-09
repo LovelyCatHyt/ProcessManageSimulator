@@ -17,7 +17,9 @@ namespace ProcessManageWPF
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly OS os;
+        public readonly OS os;
+        public static MainWindow Instance;
+
         private readonly Timer _simulateTimer;
         private int _simulateStep = 1;
         private NewProcessDialog _newProcessWindow;
@@ -27,6 +29,7 @@ namespace ProcessManageWPF
         {
             InitializeComponent();
 
+            Instance = this;
             Closed += (sender, args) => _newProcessWindow?.Close();
             os = new OS(App.cfg.cpuCount, App.cfg.memorySize);
 
@@ -45,8 +48,6 @@ namespace ProcessManageWPF
             OnTextStepPerFrameChanged(this, null);
             OSInfoUpdate();
         }
-
-        // TODO: preProcessList and postProcessList
 
         private void Update(object o, ElapsedEventArgs e)
         {
