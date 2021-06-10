@@ -16,7 +16,8 @@ namespace ProcessManageCore.Test
         [Test]
         public void TestProcessCreate()
         {
-            var p = ProcessFactory.CreateProcess(ProcessType.Kernel, "Kernel", 0x7fffffff, 1024, true, null, null);
+            ProcessTable.ResetPIDTable();
+            var p = ProcessFactory.CreateProcess(ProcessType.Kernel, "Kernel", 0x7fffffff, 1024, true, new int[0], new int[0]);
             Assert.AreEqual(100, p.PID);
         }
 

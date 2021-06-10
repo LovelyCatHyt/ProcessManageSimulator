@@ -135,7 +135,7 @@ namespace ProcessManageCore.Singleton
                 for (int i = 0; i < waitForMemoryList.Count; i++)
                 {
                     var p = waitForMemoryList[i];
-                    if (memoryMgr.RequestMemory(p.requiredMemory, p.PID) != null)
+                    if (waitForMemoryList.All(x => !p.preProcessList.Contains(x.PID)) && memoryMgr.RequestMemory(p.requiredMemory, p.PID) != null)
                     {
                         AddProcessToReadyList(waitForMemoryList[i]);
                         waitForMemoryList.RemoveAt(i);
@@ -198,23 +198,30 @@ namespace ProcessManageCore.Singleton
             {
                 throw new ArgumentOutOfRangeException(nameof(p.requiredMemory), "Requiring memory more than the total memory size");
             }
-            if (memoryMgr.RequestMemory(p.requiredMemory, p.PID) != null)
+            if (p.DependenceClear)
             {
-                if (p.DependenceClear)
+                if (memoryMgr.RequestMemory(p.requiredMemory, p.PID) != null)
                 {
                     AddProcessToReadyList(p);
                 }
                 else
                 {
-                    // 挂起
-                    p.OnHangup();
-                    hangupList.Add(p);
+                    waitForMemoryList.Add(p);
+                    p.OnWaitForMemory();
                 }
             }
             else
             {
-                waitForMemoryList.Add(p);
-                p.OnWaitForMemory();
+                if (waitForMemoryList.Any(x => p.preProcessList.Contains(x.PID)))
+                {
+                    waitForMemoryList.Add(p);
+                    p.OnWaitForMemory();
+                }
+                else
+                {
+                    hangupList.Add(p);
+                    p.OnHangup();
+                }
             }
         }
 
@@ -249,18 +256,71 @@ namespace ProcessManageCore.Singleton
         }
 
         /// <summary>
-        /// 在就绪队列中杀进程
+        /// 杀进程
         /// </summary>
         /// <param name="pid"></param>
         /// <returns></returns>
         public bool KillProcess(int pid)
         {
+            if (KillInReady(pid)) return true;
+            if (KillInHangup(pid)) return true;
+            if (KillInWaitForMemory(pid)) return true;
+            return KillProcessInCPU(pid);
+        }
+
+        private bool KillInWaitForMemory(int pid)
+        {
+            var processID = waitForMemoryList.FindIndex(p => p.PID == pid);
+            if (processID < 0)
+            {
+                // 不在就绪队列
+                return false;
+            }
+            var process = waitForMemoryList[processID];
+            var subProcesses = process.subsequenceProcessList;
+            process.OnKilled();
+            // memoryMgr.ReleaseMemoryOfProcess(process.PID);
+            waitForMemoryList.RemoveAt(processID);
+            // 递归删后继进程, 在这里将子进程和后继进程视为相同的概念
+            foreach (var subProcess in subProcesses)
+            {
+                KillProcess(subProcess);
+            }
+
+            return true;
+        }
+
+        private bool KillInHangup(int pid)
+        {
+            var processID = hangupList.FindIndex(p => p.PID == pid);
+            if (processID < 0)
+            {
+                // 不在就绪队列
+                return false;
+            }
+            var process = hangupList[processID];
+            var subProcesses = process.subsequenceProcessList;
+            process.OnKilled();
+            memoryMgr.ReleaseMemoryOfProcess(process.PID);
+            hangupList.RemoveAt(processID);
+            // 递归删后继进程, 在这里将子进程和后继进程视为相同的概念
+            foreach (var subProcess in subProcesses)
+            {
+                KillProcess(subProcess);
+            }
+
+            return true;
+        }
+
+        private bool KillInReady(int pid)
+        {
             var processID = readyList.FindIndex(p => p.PID == pid);
             if (processID < 0)
             {
                 // 不在就绪队列
-                return KillProcessInCPU(pid);
+                return false;
             }
+
             var process = readyList[processID];
             var subProcesses = process.subsequenceProcessList;
             process.OnKilled();
@@ -271,6 +331,7 @@ namespace ProcessManageCore.Singleton
             {
                 KillProcess(subProcess);
             }
+
             return true;
         }
 

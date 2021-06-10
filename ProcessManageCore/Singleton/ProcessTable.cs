@@ -17,6 +17,13 @@ namespace ProcessManageCore.Singleton
         private static readonly Dictionary<int, Process> _processesDictionary = new();
         private static readonly HashSet<int> _usedPIDSet = new();
 
+        public static void ResetPIDTable()
+        {
+            pidPhraseTable[ProcessType.System] = 0;
+            pidPhraseTable[ProcessType.Kernel] = 100;
+            pidPhraseTable[ProcessType.User] = 1000;
+        }
+
         public static int GetNewAvailablePID(ProcessType type)
         {
             var ret = pidPhraseTable[type];

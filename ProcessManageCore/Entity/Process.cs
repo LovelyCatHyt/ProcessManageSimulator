@@ -137,7 +137,7 @@ namespace ProcessManageCore.Entity
             foreach (var i in subsequenceProcessList)
             {
                 var subProcess = ProcessTable.GetProcess(i);
-                subProcess.PreProcessFinish(PID);
+                subProcess?.PreProcessFinish(PID);
             }
             finishedEvent?.Invoke(this);
         }
