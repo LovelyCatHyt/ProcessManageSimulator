@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Threading;
 using ProcessManageCore.Entity;
 using ProcessManageCore.Singleton;
+using ProcessManageWPF.Visitor;
 using Timer = System.Timers.Timer;
 
 namespace ProcessManageWPF
@@ -69,6 +70,9 @@ namespace ProcessManageWPF
         private void OSInfoUpdateNow()
         {
             var cachedSelected = processList.SelectedItem;
+            // 更新内存占用
+            memSegment.MemoryBlocks = os.AllMemoryBlocks.Select(x=>new MemoryBlockVisitor(x));
+
             // 更新CPU进度条
             foreach (CPUVisitor visitor in cpuListView.Items)
             {
@@ -103,7 +107,7 @@ namespace ProcessManageWPF
             ResetProcessList(hangupList, os.HangupList);
             // 后备队列
             ResetProcessList(waitForMemoryList, os.WaitForMemoryList);
-            if(processList.SelectedItem == null) processList.SelectedItem = cachedSelected;
+            processList.SelectedItem ??= cachedSelected;
         }
 
         private void ResetProcessList(ListView listView, Process[] list)
@@ -133,7 +137,7 @@ namespace ProcessManageWPF
             else
             {
                 _newProcessWindow.Activate();
-                _newProcessWindow.Topmost = true;
+                // _newProcessWindow.Topmost = true;
                 // newProcessWindow.Activate();
             }
         }

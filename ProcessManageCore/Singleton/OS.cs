@@ -22,6 +22,8 @@ namespace ProcessManageCore.Singleton
         public Process[] ReadyList => readyList.ToArray();
         public Process[] HangupList => hangupList.ToArray();
         public Process[] WaitForMemoryList => waitForMemoryList.ToArray();
+        public MemoryBlock[] AllMemoryBlocks => memoryMgr.AllBlocks;
+        //public MemoryBlock[] MemoryBlocks=>
 
         private readonly MemoryManager memoryMgr;
         /// <summary>

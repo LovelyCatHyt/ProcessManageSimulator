@@ -12,6 +12,29 @@ namespace ProcessManageCore.Singleton
         public int UsedSpace => _occupiedBlocks.Sum(b => b.length);
         public int RemainedSpace => _availableBlocks.Sum(b => b.length);
         public int MaxBlock => _availableBlocks.Count > 0 ? _availableBlocks.Max(b => b.length) : 0;
+        public MemoryBlock[] AllBlocks
+        {
+            get
+            {
+                int aIndex = 0;
+                int oIndex = 0;
+
+                int total = _occupiedBlocks.Count + _availableBlocks.Count;
+                MemoryBlock[] tempArray = new MemoryBlock[total];
+                var i = 0;
+                for (; aIndex< _availableBlocks.Count; i++)
+                {
+                    tempArray[i] = _availableBlocks[aIndex];
+                    aIndex++;
+                }
+                for(;oIndex< _occupiedBlocks.Count; i++)
+                {
+                    tempArray[i] = _occupiedBlocks[oIndex];
+                    oIndex++;
+                }
+                return tempArray.OrderBy(x=>x.startPos).ToArray();
+            }
+        }
 
         private readonly List<MemoryBlock> _availableBlocks = new();
         private readonly List<MemoryBlock> _occupiedBlocks = new();
@@ -111,7 +134,7 @@ namespace ProcessManageCore.Singleton
             // I know it's slow, but who cares? XD
             // TODO-Performance: _occupiedBlocks use hashset
             _occupiedBlocks.RemoveAll(x => list.Contains(x));
-            list.ForEach(x=>x.Release());
+            list.ForEach(x => x.Release());
             // _occupiedBlocks.Except(list);
             _availableBlocks.AddRange(list);
             _availableBlocks.Sort((x, y) => x.startPos - y.startPos);

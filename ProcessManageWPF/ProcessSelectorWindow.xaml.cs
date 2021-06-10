@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using ProcessManageCore.Entity;
+using ProcessManageWPF.Visitor;
 
 namespace ProcessManageWPF
 {

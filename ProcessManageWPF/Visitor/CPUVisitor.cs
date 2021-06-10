@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using ProcessManageCore.Entity;
 
-namespace ProcessManageWPF
+namespace ProcessManageWPF.Visitor
 {
     public class CPUVisitor : INotifyPropertyChanged
     {

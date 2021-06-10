@@ -4,16 +4,20 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProcessManageWPF"
+        xmlns:visitor="clr-namespace:ProcessManageWPF.Visitor"
         mc:Ignorable="d"
         Title="进程模拟器 - by Hyt" Height="600" Width="1000">
     <Window.Resources>
-        <local:ProcessVisitor x:Key="focusProcess"></local:ProcessVisitor>
-        <local:StateColorConverter x:Key="StateColorConverter"></local:StateColorConverter>
-        <local:StateStringConverter x:Key="StateStringConverter"></local:StateStringConverter>
-        <local:ProcessTypeConverter x:Key="ProcessTypeConverter"></local:ProcessTypeConverter>
+        <visitor:StateColorConverter x:Key="StateColorConverter"></visitor:StateColorConverter>
+        <visitor:StateStringConverter x:Key="StateStringConverter"></visitor:StateStringConverter>
+        <visitor:ProcessTypeConverter x:Key="ProcessTypeConverter"></visitor:ProcessTypeConverter>
+        <!--<Style x:Key="stretchStyle" TargetType="ListViewItem">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        </Style>-->
     </Window.Resources>
     <Grid  Margin="10,10,10,10">
         <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
             <RowDefinition Height="2*"/>
             <RowDefinition Height="5"/>
             <RowDefinition Height="4*"/>
@@ -25,8 +29,12 @@
             <ColumnDefinition Width="5"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
+        <!--内存数据-->
+        <GroupBox Header="内存占用" Grid.ColumnSpan="3">
+            <local:SegmentView x:Name="memSegment"></local:SegmentView>
+        </GroupBox>
         <!--CPU信息-->
-        <GroupBox Header="CPU列表">
+        <GroupBox Grid.Row="1" Grid.Column="0" Header="CPU列表">
             <ListView Grid.Column="0" Name="cpuListView">
                 <ListView.View>
                     <GridView>
@@ -34,7 +42,7 @@
                         <GridViewColumn Header="进度" Width="500">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <ProgressBar Value="{Binding Progress, Mode=OneWay}" Maximum="1"  Height="20" Width="400"/>
+                                    <ProgressBar Value="{Binding Progress, Mode=OneWay}" Maximum="1" Margin="1,1,1,1" Width="300" Height="20" />
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
 
@@ -43,12 +51,12 @@
                 </ListView.View>
             </ListView>
         </GroupBox>
-        <GridSplitter ResizeDirection="Rows" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
+        <GridSplitter ResizeDirection="Rows" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
                       VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-        <GridSplitter ResizeDirection="Rows" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3"
+        <GridSplitter ResizeDirection="Rows" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3"
                       VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
         <!--进程运行列表-->
-        <ListView Grid.Column="0" Grid.Row="2" 
+        <ListView Grid.Column="0" Grid.Row="3" 
                   HorizontalAlignment="Stretch" VerticalContentAlignment="Stretch" Name="processList"
                   >
             <ListView.View>
@@ -71,8 +79,8 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <GridSplitter Grid.Row="0" ResizeDirection="Columns" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.RowSpan="5"/>
-        <StackPanel Grid.Row="0" Grid.Column="2">
+        <GridSplitter Grid.Row="1" ResizeDirection="Columns" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.RowSpan="5"/>
+        <StackPanel Grid.Row="1" Grid.Column="2">
             <StackPanel Orientation="Vertical">
                 <StackPanel Orientation="Horizontal">
                     <Label Content="已运行时间片数目:"></Label>
@@ -101,7 +109,7 @@
             </StackPanel>
         </StackPanel>
         <!--进程信息-->
-        <Grid Grid.Row="2" Grid.Column="2" DataContext="{Binding ElementName=processList, Path=SelectedItem}">
+        <Grid Grid.Row="3" Grid.Column="2" DataContext="{Binding ElementName=processList, Path=SelectedItem}">
             <GroupBox Header="进程信息" >
                 <StackPanel Orientation="Vertical" Grid.Row="1">
                     <Grid>
@@ -174,7 +182,7 @@
             </GroupBox>
         </Grid>
         <!--进程队列-->
-        <Grid Grid.Row="4" Grid.Column="0" DataContext="{Binding SelectedItem, ElementName=processList}">
+        <Grid Grid.Row="5" Grid.Column="0" DataContext="{Binding SelectedItem, ElementName=processList}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
@@ -213,7 +221,7 @@
             </GroupBox>
         </Grid>
         <!--进程依赖-->
-        <GroupBox Header="进程依赖" Grid.Column="2" Grid.Row="4">
+        <GroupBox Header="进程依赖" Grid.Column="2" Grid.Row="5">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition></ColumnDefinition>

@@ -22,8 +22,8 @@ namespace ProcessManageWPF
             _macros.Add("DupCount", _duplicatedCount);
             btnSubmit.Focus();
             processFullInfo.textName.Text = App.cfg.GetStringCache("NewProcess.Name");
-            processFullInfo.textTimeTotal.Text = App.cfg.GetIntCache("NewProcess.Memory").ToString();
-            processFullInfo.textMemory.Text = App.cfg.GetIntCache("NewProcess.TotalTime").ToString();
+            processFullInfo.textMemory.Text = App.cfg.GetIntCache("NewProcess.Memory").ToString();
+            processFullInfo.textTimeTotal.Text = App.cfg.GetIntCache("NewProcess.TotalTime").ToString();
             processFullInfo.comboBoxProcessType.SelectedIndex = App.cfg.GetIntCache("NewProcess.ProcessType");
             Owner = owner;
         }

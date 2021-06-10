@@ -8,7 +8,7 @@ using System.Windows.Media;
 using ProcessManageCore.Entity;
 using ProcessManageCore.Singleton;
 
-namespace ProcessManageWPF
+namespace ProcessManageWPF.Visitor
 {
     public class ProcessVisitor : INotifyPropertyChanged
     {

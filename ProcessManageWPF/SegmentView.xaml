@@ -1,0 +1,31 @@
+﻿<UserControl x:Class="ProcessManageWPF.SegmentView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ProcessManageWPF"
+             mc:Ignorable="d" 
+             d:DesignHeight="80" d:DesignWidth="1000">
+    <UserControl.Resources>
+        <Style x:Key="OccupyStyle" TargetType="Label">
+            <Setter Property="Foreground" Value="OrangeRed"></Setter>
+            <Setter Property="Background" Value="Yellow"></Setter>
+        </Style>
+        <Style x:Key="AvailableStyle" TargetType="Label">
+            <Setter Property="Foreground" Value="Black"></Setter>
+            <Setter Property="Background" Value="LightGreen"></Setter>
+        </Style>
+        <ControlTemplate x:Name="SegmentTemplate" x:Key="Segment" TargetType="Label">
+            <Label Foreground="{TemplateBinding Foreground}"
+                Background="{TemplateBinding Background}"
+                Content="{Binding Length}"
+                
+                BorderThickness="2"
+                BorderBrush="Black" VerticalAlignment="Center"
+            />
+        </ControlTemplate>
+    </UserControl.Resources>
+    <Grid Name="MainGrid">
+        <!--<Label Style="{StaticResource AvailableStyle}" Template="{StaticResource Segment}">11111111</Label>-->
+    </Grid>
+</UserControl>
