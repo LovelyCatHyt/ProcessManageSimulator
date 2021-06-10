@@ -19,9 +19,9 @@
             <Label Foreground="{TemplateBinding Foreground}"
                 Background="{TemplateBinding Background}"
                 Content="{Binding Length}"
-                
+                ToolTip="{Binding ToolTip}"
                 BorderThickness="2"
-                BorderBrush="Black" VerticalAlignment="Center"
+                BorderBrush="Black" VerticalAlignment="Center" 
             />
         </ControlTemplate>
     </UserControl.Resources>

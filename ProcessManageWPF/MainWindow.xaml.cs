@@ -37,7 +37,7 @@ namespace ProcessManageWPF
             for (var index = 0; index < os.cpuList.Length; index++)
             {
                 var cpu = os.cpuList[index];
-                cpuListView.Items.Add(new CPUVisitor{cpu = cpu, index = index});
+                cpuListView.Items.Add(new CPUVisitor { cpu = cpu, index = index });
             }
 
             _visitorDictionary = new Dictionary<Process, ProcessVisitor>();
@@ -52,7 +52,7 @@ namespace ProcessManageWPF
 
         private void Update(object o, ElapsedEventArgs e)
         {
-            os.Update(_simulateStep); 
+            os.Update(_simulateStep);
             OSInfoUpdate();
         }
 
@@ -71,7 +71,7 @@ namespace ProcessManageWPF
         {
             var cachedSelected = processList.SelectedItem;
             // 更新内存占用
-            memSegment.MemoryBlocks = os.AllMemoryBlocks.Select(x=>new MemoryBlockVisitor(x));
+            memSegment.MemoryBlocks = os.AllMemoryBlocks.Select(x => new MemoryBlockVisitor(x));
 
             // 更新CPU进度条
             foreach (CPUVisitor visitor in cpuListView.Items)
@@ -86,7 +86,7 @@ namespace ProcessManageWPF
 
             for (var i = 0; i < processList.Items.Count; i++)
             {
-                var processVisitor = (ProcessVisitor) processList.Items[i];
+                var processVisitor = (ProcessVisitor)processList.Items[i];
                 if (processVisitor.State == ProcessState.Killed)
                 {
                     processList.Items.RemoveAt(i);
@@ -141,7 +141,7 @@ namespace ProcessManageWPF
                 // newProcessWindow.Activate();
             }
         }
-        
+
         private void OnTextFPSChanged(object sender, RoutedEventArgs e)
         {
             if (!double.TryParse(textFPS.Text, out var fps))
@@ -184,7 +184,7 @@ namespace ProcessManageWPF
 
         private void BtnKillProcess_OnClick(object sender, RoutedEventArgs e)
         {
-            if (processList.SelectedItems.Count >0)
+            if (processList.SelectedItems.Count > 0)
             {
                 foreach (ProcessVisitor item in processList.SelectedItems)
                 {
@@ -195,5 +195,26 @@ namespace ProcessManageWPF
                 OSInfoUpdateNow();
             }
         }
+
+        private void Btn_OnHangup(object sender, RoutedEventArgs e)
+        {
+            if (processList.SelectedItem != null)
+            {
+                var visitor = ((ProcessVisitor)processList.SelectedItem);
+                os.Hangup(visitor.process);
+                visitor.NotifyPropertyChange();
+            }
         }
+
+
+        private void Btn_OnUnhang(object sender, RoutedEventArgs e)
+        {
+            if (processList.SelectedItem != null)
+            {
+                var visitor = ((ProcessVisitor)processList.SelectedItem);
+                os.Unhang(visitor.process);
+                visitor.NotifyPropertyChange();
+            }
+        }
+    }
 }

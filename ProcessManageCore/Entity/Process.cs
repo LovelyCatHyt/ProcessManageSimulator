@@ -67,10 +67,11 @@ namespace ProcessManageCore.Entity
         /// 进程状态
         /// </summary>
         public ProcessState state;
+        public bool isForceHangup = false;
         /// <summary>
         /// true 则为独立进程
         /// </summary>
-        public readonly bool isIndependent;
+        public bool isIndependent;
         /// <summary>
         /// 前驱进程(列表)
         /// </summary>
@@ -120,6 +121,23 @@ namespace ProcessManageCore.Entity
             hangupEvent?.Invoke(this);
         }
 
+        /// <summary>
+        /// 强制挂起, 且只能通过强制解挂的方式解挂
+        /// </summary>
+        public virtual void ForceHangup()
+        {
+            isForceHangup = true;
+            DependenceClear = false;
+            OnHangup();
+        }
+
+        public virtual void ForceUnhang()
+        {
+            isForceHangup = false;
+            state = ProcessState.WaitForMemory;
+            DependenceClear = true;
+        }
+
         public virtual void OnReady()
         {
             state = ProcessState.Ready;
@@ -149,6 +167,7 @@ namespace ProcessManageCore.Entity
         /// <param name="sub"></param>
         public static void SetProcessDependence(Process pre, Process sub)
         {
+            pre.isIndependent = sub.isIndependent = false;
             pre.subsequenceProcessList.Add(sub.PID);
             sub.preProcessList.Add(pre.PID);
             sub.DependenceClear = false;

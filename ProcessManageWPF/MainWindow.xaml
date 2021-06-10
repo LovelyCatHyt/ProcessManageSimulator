@@ -172,11 +172,15 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition></ColumnDefinition>
                             <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <Button Content="添加进程" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                                 Grid.Row="0"
                                 Grid.Column="0" Click="Btn_AddProcess" Cursor="Hand" Margin="5,5,5,5" />
                         <Button x:Name="btnKillProcess" Content="终止进程" Click="BtnKillProcess_OnClick" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5,5,5,5"></Button>
+                        <Button Grid.Column="2" Click="Btn_OnHangup" Margin="5,5,5,5" >挂起</Button>
+                        <Button Grid.Column="3" Click="Btn_OnUnhang"  Margin="5,5,5,5" >解挂</Button>
                     </Grid>
                 </StackPanel>
             </GroupBox>

@@ -130,7 +130,7 @@ namespace ProcessManageCore.Singleton
         /// <param name="process"></param>
         public void ReleaseMemoryOfProcess(int process)
         {
-            var list = _occupyDictionary[process];
+            if(!_occupyDictionary.TryGetValue(process, out var list)) return;
             // I know it's slow, but who cares? XD
             // TODO-Performance: _occupiedBlocks use hashset
             _occupiedBlocks.RemoveAll(x => list.Contains(x));

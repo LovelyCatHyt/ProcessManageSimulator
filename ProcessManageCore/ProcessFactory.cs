@@ -23,8 +23,8 @@ namespace ProcessManageCore
             newProcess.priority = newProcess.type switch
             {
                 ProcessType.System => 0,
-                ProcessType.Kernel => 10,
-                ProcessType.User => 20,
+                ProcessType.Kernel => 100,
+                ProcessType.User => 200,
                 _ => 20
             };
             ProcessTable.AddProcess(newProcess);

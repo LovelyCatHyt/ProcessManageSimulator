@@ -50,11 +50,6 @@ namespace ProcessManageCore.Singleton
             Instance = this;
         }
 
-        public static void OSLoop(OS os)
-        {
-
-        }
-
         /// <summary>
         /// 更新一个时间单位
         /// </summary>
@@ -68,7 +63,7 @@ namespace ProcessManageCore.Singleton
                     cpu.timePhrase++;
                     var process = ProcessTable.GetProcess(cpu.occupyingProcess);
                     process.remainedTime--;
-                    if (process.remainedTime == 0)
+                    if (process.remainedTime <= 0)
                     {
                         process.OnFinished();
                         KillProcess(process.PID);
@@ -95,6 +90,7 @@ namespace ProcessManageCore.Singleton
                     if (readyList.Count > 0) RunProcessImmediate(cpu, readyList[0].PID);
                 }
             }
+
             // 更新队列优先级
             readyList.ForEach(p => p.priority = Math.Max(0, p.priority - 1));
             ElapsedPeriod++;
@@ -181,9 +177,24 @@ namespace ProcessManageCore.Singleton
         /// <param name="p"></param>
         public void Hangup(Process p)
         {
-            // TODO: Hangup
-            p.OnHangup();
-            hangupList.Add(p);
+            switch (p.state)
+            {
+                case ProcessState.Running:
+                    cpuList.FirstOrDefault(x => x.occupyingProcess == p.PID)?.Release();
+                    hangupList.Add(p);
+                    break;
+            }
+            p.ForceHangup();
+            // p.ForceHangup();
+        }
+
+        /// <summary>
+        /// 无视前驱进程强制解挂
+        /// </summary>
+        /// <param name="p"></param>
+        public void Unhang(Process p)
+        {
+            p.ForceUnhang();
         }
 
         /// <summary>

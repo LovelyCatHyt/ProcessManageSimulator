@@ -20,6 +20,8 @@ namespace ProcessManageWPF.Visitor
 
         public bool Occupied => block?.occupied ?? false;
 
+        public string ToolTip => block != null ? $"Start: {block.startPos}, Length: {block.length}" : "";
+
         public MemoryBlockVisitor(MemoryBlock block)
         {
             this.block = block;
