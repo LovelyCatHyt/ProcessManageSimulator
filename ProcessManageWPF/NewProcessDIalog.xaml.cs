@@ -32,12 +32,6 @@ namespace ProcessManageWPF
         {
             var process = processFullInfo.CreateNewFromInfo(_macros);
             addNewProcess?.Invoke(process);
-            App.cfg.SetStringCache("NewProcess.Name", processFullInfo.textName.Text);
-            App.cfg.SetIntCache("NewProcess.Memory",
-                int.TryParse(processFullInfo.textMemory.Text, out var temp) ? temp : 0);
-            App.cfg.SetIntCache("NewProcess.TotalTime",
-                int.TryParse(processFullInfo.textTimeTotal.Text, out temp) ? temp : 0);
-            App.cfg.SetIntCache("NewProcess.ProcessType", processFullInfo.comboBoxProcessType.SelectedIndex);
             // 计数
             if (processFullInfo.textName.Text == App.cfg.GetStringCache("NewProcess.Name"))
             {
@@ -48,6 +42,12 @@ namespace ProcessManageWPF
                 _duplicatedCount = 0;
             }
             _macros["DupCount"] = _duplicatedCount;
+            App.cfg.SetStringCache("NewProcess.Name", processFullInfo.textName.Text);
+            App.cfg.SetIntCache("NewProcess.Memory",
+                int.TryParse(processFullInfo.textMemory.Text, out var temp) ? temp : 0);
+            App.cfg.SetIntCache("NewProcess.TotalTime",
+                int.TryParse(processFullInfo.textTimeTotal.Text, out temp) ? temp : 0);
+            App.cfg.SetIntCache("NewProcess.ProcessType", processFullInfo.comboBoxProcessType.SelectedIndex);
         }
 
         private void Cancel(object sender, RoutedEventArgs e)
