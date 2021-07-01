@@ -7,11 +7,21 @@
              mc:Ignorable="d" 
              d:DesignHeight="80" d:DesignWidth="1000">
     <UserControl.Resources>
-        <Style x:Key="OccupyStyle" TargetType="Label">
+        <Style x:Key="BasicSegment" TargetType="Label">
+            <Setter Property="BorderBrush" Value="DimGray"></Setter>
+            <Setter Property="BorderThickness" Value="1"></Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="BorderBrush" Value="CornflowerBlue"></Setter>
+                    <Setter Property="BorderThickness" Value="2"></Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="OccupyStyle" TargetType="Label" BasedOn="{StaticResource BasicSegment}">
             <Setter Property="Foreground" Value="OrangeRed"></Setter>
             <Setter Property="Background" Value="Yellow"></Setter>
         </Style>
-        <Style x:Key="AvailableStyle" TargetType="Label">
+        <Style x:Key="AvailableStyle" TargetType="Label" BasedOn="{StaticResource BasicSegment}">
             <Setter Property="Foreground" Value="Black"></Setter>
             <Setter Property="Background" Value="LightGreen"></Setter>
         </Style>
@@ -20,12 +30,14 @@
                 Background="{TemplateBinding Background}"
                 Content="{Binding Length}"
                 ToolTip="{Binding ToolTip}"
-                BorderThickness="2"
-                BorderBrush="Black" VerticalAlignment="Center" 
-            />
+                BorderThickness="{TemplateBinding BorderThickness}"
+                BorderBrush="{TemplateBinding BorderBrush}" VerticalAlignment="Center"
+                MouseDown="MouseDownOnSegment"
+            >
+            </Label>
         </ControlTemplate>
     </UserControl.Resources>
     <Grid Name="MainGrid">
-        <!--<Label Style="{StaticResource AvailableStyle}" Template="{StaticResource Segment}">11111111</Label>-->
+        <!--<Label Style="{StaticResource OccupyStyle}" Template="{StaticResource Segment}"/>-->
     </Grid>
 </UserControl>

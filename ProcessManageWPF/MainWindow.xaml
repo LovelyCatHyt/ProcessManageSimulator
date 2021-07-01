@@ -31,7 +31,7 @@
         </Grid.ColumnDefinitions>
         <!--内存数据-->
         <GroupBox Header="内存占用" Grid.ColumnSpan="3">
-            <local:SegmentView x:Name="memSegment"></local:SegmentView>
+            <local:SegmentView x:Name="memSegment"  SelectedItem="{Binding ElementName=processList, Path=SelectedItem, Mode=TwoWay}"></local:SegmentView>
         </GroupBox>
         <!--CPU信息-->
         <GroupBox Grid.Row="1" Grid.Column="0" Header="CPU列表">

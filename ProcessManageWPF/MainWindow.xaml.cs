@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using ProcessManageCore.Entity;
+using ProcessManageCore.Exception;
 using ProcessManageCore.Singleton;
 using ProcessManageWPF.Visitor;
 using Timer = System.Timers.Timer;
@@ -48,6 +49,19 @@ namespace ProcessManageWPF
             OnTextFPSChanged(this, null);
             OnTextStepPerFrameChanged(this, null);
             OSInfoUpdate();
+        }
+
+        public ProcessVisitor GetProcessVisitor(int pid)
+        {
+            try
+            {
+                var process = ProcessTable.GetProcess(pid);
+                return _visitorDictionary?[process];
+            }
+            catch (ProcessNotFoundException)
+            {
+                return null;
+            }
         }
 
         private void Update(object o, ElapsedEventArgs e)

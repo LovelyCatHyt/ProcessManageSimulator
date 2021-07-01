@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 using ProcessManageWPF.Visitor;
 
 namespace ProcessManageWPF
@@ -12,10 +13,25 @@ namespace ProcessManageWPF
     /// </summary>
     public partial class SegmentView : UserControl
     {
-        public Style OccupyStyle => (Style)FindResource("OccupyStyle");
-        public Style AvailableStyle => (Style) FindResource("AvailableStyle");
+        private Style occupyStyle;
+        private Style availableStyle;
+
+        public Style OccupyStyle => occupyStyle ??= (Style)FindResource("OccupyStyle");
+        public Style AvailableStyle => availableStyle ??= (Style)FindResource("AvailableStyle");
+
+        public object SelectedItem
+        {
+            get => GetValue(SelectedItemProperty);
+            set
+            {
+                SetValue(SelectedItemProperty, value);
+
+            }
+        }
 
         private IEnumerable<MemoryBlockVisitor> _memoryBlocks;
+
+        public static DependencyProperty SelectedItemProperty = DependencyProperty.Register("SelectedItem", typeof(object), typeof(SegmentView));
 
         public IEnumerable<MemoryBlockVisitor> MemoryBlocks
         {
@@ -64,6 +80,13 @@ namespace ProcessManageWPF
             }
 
 
+        }
+
+        private void MouseDownOnSegment(object sender, MouseButtonEventArgs e)
+        {
+            var segment = (Label)sender;
+            var memBlock = (MemoryBlockVisitor)segment.DataContext;
+            SelectedItem = MainWindow.Instance.GetProcessVisitor(memBlock.block.occupyingProcessPID);
         }
     }
 }

@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Text;
 using System.Windows.Media;
 using ProcessManageCore.Entity;
+using ProcessManageCore.Exception;
 using ProcessManageCore.Singleton;
 
 namespace ProcessManageWPF.Visitor
@@ -16,11 +17,24 @@ namespace ProcessManageWPF.Visitor
 
         public int Length => block?.length ?? 0;
 
-        public Process OccupiedProcess => ProcessTable.GetProcess(block?.occupyingProcessPID ?? 0);
+        public Process OccupiedProcess
+        {
+            get
+            {
+                try
+                {
+                    return ProcessTable.GetProcess(block?.occupyingProcessPID ?? 0);
+                }
+                catch (ProcessNotFoundException)
+                {
+                    return null;
+                }
+            }
+        }
 
         public bool Occupied => block?.occupied ?? false;
 
-        public string ToolTip => block != null ? $"Start: {block.startPos}, Length: {block.length}" : "";
+        public string ToolTip => block != null ? $"Start: {block.startPos}, Length: {block.length}, PID: {block.occupyingProcessPID}" : "";
 
         public MemoryBlockVisitor(MemoryBlock block)
         {
